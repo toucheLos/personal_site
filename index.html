@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carlos Eckert</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: #ffffff;
+      color: #1a1a1a;
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    #bg-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #content {
+      position: relative;
+      z-index: 1;
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 56px 28px 48px;
+    }
+
+    /* ── Section labels ─────────────────── */
+    h2.section-label {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 11px;
+      font-weight: normal;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #999;
+      border-bottom: 1px solid #e8e8e8;
+      padding-bottom: 5px;
+      margin-bottom: 18px;
+    }
+
+    section {
+      margin-bottom: 44px;
+    }
+
+    /* ── Header ─────────────────────────── */
+    header {
+      margin-bottom: 36px;
+    }
+
+    header h1 {
+      font-size: 22px;
+      font-weight: normal;
+      letter-spacing: 0.01em;
+      margin-bottom: 5px;
+    }
+
+    .tagline {
+      font-size: 14px;
+      color: #555;
+      font-style: italic;
+      margin-bottom: 14px;
+    }
+
+    .social-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 20px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 12px;
+      margin-bottom: 20px;
+    }
+
+    .social-links a {
+      color: #4a6fa5;
+      text-decoration: none;
+    }
+
+    .social-links a:hover {
+      text-decoration: underline;
+    }
+
+    header hr {
+      border: none;
+      border-top: 1px solid #e8e8e8;
+    }
+
+    /* ── Research Papers ────────────────── */
+    .paper-list {
+      list-style: none;
+    }
+
+    .paper-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 20px;
+      padding: 9px 0;
+      border-bottom: 1px solid #f2f2f2;
+    }
+
+    .paper-list li:last-child {
+      border-bottom: none;
+    }
+
+    .paper-title {
+      font-size: 14px;
+      flex: 1;
+    }
+
+    .paper-title a {
+      color: #4a6fa5;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      text-decoration-color: #c0d0e0;
+    }
+
+    .paper-title a:hover {
+      text-decoration-color: #4a6fa5;
+    }
+
+    .paper-title .inprep {
+      color: #888;
+      font-style: italic;
+    }
+
+    .paper-venue {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 11px;
+      color: #888;
+      white-space: nowrap;
+      flex-shrink: 0;
+      text-align: right;
+    }
+
+    /* ── Projects grid ──────────────────── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .project-card {
+      border: 1px solid #eeeeee;
+      border-radius: 4px;
+      padding: 14px 16px 12px;
+    }
+
+    .project-name {
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .project-desc {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.45;
+      margin-bottom: 10px;
+    }
+
+    .project-tag {
+      display: inline-block;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #999;
+      background: #f6f6f6;
+      padding: 2px 7px;
+      border-radius: 2px;
+    }
+
+    /* ── Experience timeline ─────────────── */
+    .timeline {
+      list-style: none;
+    }
+
+    .timeline li {
+      display: grid;
+      grid-template-columns: 112px 1fr;
+      gap: 16px;
+      padding: 9px 0;
+      border-bottom: 1px solid #f2f2f2;
+    }
+
+    .timeline li:last-child {
+      border-bottom: none;
+    }
+
+    .tl-year {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 11px;
+      color: #888;
+      line-height: 1.5;
+      padding-top: 1px;
+    }
+
+    .tl-role {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+
+    .tl-desc {
+      font-size: 13px;
+      color: #666;
+    }
+
+    /* ── Education ──────────────────────── */
+    .edu-degree {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+
+    .edu-meta {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 12px;
+      color: #888;
+    }
+
+    /* ── Footer ─────────────────────────── */
+    footer {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 11px;
+      color: #aaa;
+      padding-top: 14px;
+      border-top: 1px solid #e8e8e8;
+    }
+
+    /* ── Responsive ─────────────────────── */
+    @media (max-width: 767px) {
+      #bg-canvas {
+        display: none;
+      }
+
+      #content {
+        padding: 40px 18px 36px;
+      }
+
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline li {
+        grid-template-columns: 1fr;
+        gap: 2px;
+      }
+
+      .paper-list li {
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .paper-venue {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div id="content">
+  <header>
+    <h1>Carlos Eckert</h1>
+    <p class="tagline">I treat neural dynamics as a mathematical inference problem.</p>
+    <nav class="social-links">
+      <a href="https://github.com/carloseckert" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://twitter.com/carloseckert" target="_blank" rel="noopener noreferrer">Twitter&thinsp;/&thinsp;X</a>
+      <a href="https://linkedin.com/in/carloseckert" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <a href="#" id="email-reveal" aria-label="Click to reveal email address">Email</a>
+    </nav>
+    <hr>
+  </header>
+
+  <main>
+    <section aria-labelledby="lbl-research">
+      <h2 class="section-label" id="lbl-research">Research</h2>
+      <ul class="paper-list">
+        <li>
+          <span class="paper-title">
+            <a href="#" target="_blank" rel="noopener noreferrer">
+              NeuroVISOR: Architectural Redesign for Dynamic Hodgkin-Huxley Simulation
+            </a>
+          </span>
+          <span class="paper-venue">Temple University, 2025</span>
+        </li>
+        <li>
+          <span class="paper-title">
+            <a href="#" target="_blank" rel="noopener noreferrer">
+              VIEB: Unsupervised Behavioral State Discovery in Conditioned Fear Mouse Models
+            </a>
+          </span>
+          <span class="paper-venue">Temple University, 2025</span>
+        </li>
+        <li>
+          <span class="paper-title">
+            <span class="inprep">Forward Euler Validation Against Yale NEURON Solver</span>
+          </span>
+          <span class="paper-venue">In preparation</span>
+        </li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="lbl-projects">
+      <h2 class="section-label" id="lbl-projects">Projects &amp; Companies</h2>
+      <div class="projects-grid">
+        <article class="project-card">
+          <div class="project-name">Montenova</div>
+          <div class="project-desc">Children's screen-time management platform.</div>
+          <span class="project-tag">Co-founder</span>
+        </article>
+        <article class="project-card">
+          <div class="project-name">Rote Math</div>
+          <div class="project-desc">FSRS spaced repetition for mathematics.</div>
+          <span class="project-tag">Co-founder</span>
+        </article>
+        <article class="project-card">
+          <div class="project-name">VIEB Pipeline</div>
+          <div class="project-desc">Behavioral analysis pipeline for DeepLabCut keypoint data.</div>
+          <span class="project-tag">Research</span>
+        </article>
+        <article class="project-card">
+          <div class="project-name">NeuroVISOR</div>
+          <div class="project-desc">HPC-accelerated Hodgkin-Huxley neural simulator.</div>
+          <span class="project-tag">Research</span>
+        </article>
+        <article class="project-card">
+          <div class="project-name">Game Theory Club</div>
+          <div class="project-desc">Temple University, 100+ members.</div>
+          <span class="project-tag">Founder</span>
+        </article>
+        <article class="project-card">
+          <div class="project-name">Personal AI Agent</div>
+          <div class="project-desc">FastAPI + Expo mobile interface with proactive scheduling loop.</div>
+          <span class="project-tag">Project</span>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="lbl-experience">
+      <h2 class="section-label" id="lbl-experience">Experience</h2>
+      <ul class="timeline">
+        <li>
+          <span class="tl-year">2024&ndash;present</span>
+          <div>
+            <div class="tl-role">HPC Administrator &middot; Temple University + Mount Sinai</div>
+            <div class="tl-desc">Minerva Supercomputer</div>
+          </div>
+        </li>
+        <li>
+          <span class="tl-year">2022&ndash;present</span>
+          <div>
+            <div class="tl-role">Computational Neuroscience Researcher &middot; Temple University</div>
+            <div class="tl-desc">Neural simulation and behavioral state analysis.</div>
+          </div>
+        </li>
+        <li>
+          <span class="tl-year">2023&ndash;present</span>
+          <div>
+            <div class="tl-role">Co-founder &middot; Montenova</div>
+            <div class="tl-desc">Building children's screen-time management platform.</div>
+          </div>
+        </li>
+        <li>
+          <span class="tl-year">2023</span>
+          <div>
+            <div class="tl-role">Founder &middot; Temple Game Theory Club</div>
+            <div class="tl-desc">Grew to 100+ active members.</div>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="lbl-education">
+      <h2 class="section-label" id="lbl-education">Education</h2>
+      <div class="edu-degree">B.S. Computer Science + Mathematics</div>
+      <div class="edu-meta">Temple University &middot; May 2026</div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Carlos Eckert &middot; Philadelphia, PA &middot; <span id="yr"></span></p>
+  </footer>
+</div>
+
+<script>
+// Footer year
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+// Email reveal (assembled at click time to avoid scraping)
+(function () {
+  var el = document.getElementById('email-reveal');
+  var u = 'carlos', d = 'carloseckert', t = 'com';
+  var done = false;
+  el.addEventListener('click', function (e) {
+    e.preventDefault();
+    if (done) return;
+    var addr = u + '\x40' + d + '.' + t;
+    el.textContent = addr;
+    el.href = 'mai' + 'lto:' + addr;
+    done = true;
+  });
+})();
+
+// ── Canvas Background ────────────────────────────────────────────────────────
+(function () {
+  var canvas = document.getElementById('bg-canvas');
+  var ctx = canvas.getContext('2d');
+  var W = 0, H = 0;
+  var raf = null;
+  var paused = false;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    NN.init();
+    HPC.init();
+  }
+
+  // ── NEURAL NETWORK ───────────────────────────────────────────────────────
+  // Upper-left region, muted blue-gray
+  var NN = {
+    nodes: [],
+    edges: [],
+    sigs: [],
+
+    init: function () {
+      var i, a, b, dx, dy, d, maxD;
+      this.nodes = [];
+      this.edges = [];
+      this.sigs  = [];
+
+      var count = 14;
+      var rw = W * 0.44, rh = H * 0.52;
+
+      for (i = 0; i < count; i++) {
+        this.nodes.push({
+          x:  Math.random() * rw,
+          y:  Math.random() * rh,
+          charge:     Math.random() * 0.3,
+          firing:     false,
+          fireTimer:  0,
+          threshold:  0.68 + Math.random() * 0.22,
+          decay:      0.0022 + Math.random() * 0.002,
+          checkInt:   160 + Math.random() * 300,
+          checkT:     Math.random() * 300,
+        });
+      }
+
+      maxD = Math.max(W, H) * 0.21;
+      for (a = 0; a < count; a++) {
+        for (b = a + 1; b < count; b++) {
+          dx = this.nodes[a].x - this.nodes[b].x;
+          dy = this.nodes[a].y - this.nodes[b].y;
+          d  = Math.sqrt(dx * dx + dy * dy);
+          if (d < maxD && Math.random() < 0.42) {
+            this.edges.push({ from: a, to: b });
+          }
+        }
+      }
+    },
+
+    fire: function (idx) {
+      var n = this.nodes[idx];
+      if (n.firing) return;
+      n.firing = true;
+      n.fireTimer = 34;
+      n.charge = 0;
+      var self = this;
+      this.edges.forEach(function (e) {
+        var target = -1;
+        if (e.from === idx) target = e.to;
+        else if (e.to === idx) target = e.from;
+        if (target < 0) return;
+        var fn = self.nodes[idx];
+        var tn = self.nodes[target];
+        self.sigs.push({
+          x0: fn.x, y0: fn.y,
+          x1: tn.x, y1: tn.y,
+          dest: target,
+          t: 0,
+          spd: 0.007 + Math.random() * 0.006,
+        });
+      });
+    },
+
+    update: function () {
+      var self = this;
+      this.nodes.forEach(function (n, i) {
+        if (n.firing) {
+          if (--n.fireTimer <= 0) { n.firing = false; n.charge = 0; }
+        } else {
+          n.charge = Math.min(1, n.charge + n.decay);
+          if (++n.checkT > n.checkInt) {
+            n.checkT = 0;
+            if (Math.random() < 0.22) self.fire(i);
+          }
+        }
+      });
+      this.sigs = this.sigs.filter(function (s) {
+        s.t += s.spd;
+        if (s.t >= 1) {
+          var tn = self.nodes[s.dest];
+          tn.charge = Math.min(1, tn.charge + 0.33);
+          if (!tn.firing && tn.charge >= tn.threshold) self.fire(s.dest);
+          return false;
+        }
+        return true;
+      });
+    },
+
+    draw: function () {
+      var C = '112,144,176';
+      ctx.save();
+      ctx.globalAlpha = 0.13;
+
+      // Axons
+      this.edges.forEach(function (e) {
+        var a = NN.nodes[e.from], b = NN.nodes[e.to];
+        ctx.strokeStyle = 'rgba(' + C + ',0.5)';
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+      });
+
+      // Traveling signals
+      this.sigs.forEach(function (s) {
+        var x = s.x0 + (s.x1 - s.x0) * s.t;
+        var y = s.y0 + (s.y1 - s.y0) * s.t;
+        ctx.fillStyle = 'rgba(' + C + ',1)';
+        ctx.beginPath();
+        ctx.arc(x, y, 2.8, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Nodes
+      this.nodes.forEach(function (n) {
+        if (n.firing) {
+          var g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 20);
+          g.addColorStop(0, 'rgba(' + C + ',0.7)');
+          g.addColorStop(1, 'rgba(' + C + ',0)');
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, 20, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        var r = n.firing ? 6.5 : 3.5 + n.charge * 1.8;
+        var al = n.firing ? 1 : 0.22 + n.charge * 0.58;
+        ctx.fillStyle = 'rgba(' + C + ',' + al + ')';
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      ctx.restore();
+    }
+  };
+
+  // ── HPC CLUSTER ──────────────────────────────────────────────────────────
+  // Lower-right region, muted amber
+  var HPC = {
+    nodes: [],
+    wires: [],
+    pkts:  [],
+
+    init: function () {
+      var i, j, dc, dr;
+      this.nodes = [];
+      this.wires = [];
+      this.pkts  = [];
+
+      var NW = 52, NH = 30, GX = 80, GY = 56;
+      var cols = 3, rows = 3;
+      var totalW = (cols - 1) * GX + NW;
+      var totalH = (rows - 1) * GY + NH;
+      var ox = Math.max(W * 0.52, W - totalW - 44);
+      var oy = Math.max(H * 0.48, H - totalH - 64);
+
+      // 8 positions, skip (1,1) center for visual variety
+      var placed = 0;
+      outer:
+      for (var r = 0; r < rows; r++) {
+        for (var c = 0; c < cols; c++) {
+          if (r === 1 && c === 1) continue;
+          this.nodes.push({
+            x: ox + c * GX, y: oy + r * GY,
+            w: NW, h: NH,
+            col: c, row: r,
+            act: 0, actT: 0,
+            sendT: 40 + Math.random() * 130,
+          });
+          if (++placed >= 8) break outer;
+        }
+      }
+
+      var nn = this.nodes;
+      for (i = 0; i < nn.length; i++) {
+        for (j = i + 1; j < nn.length; j++) {
+          dc = Math.abs(nn[i].col - nn[j].col);
+          dr = Math.abs(nn[i].row - nn[j].row);
+          if (dc + dr <= 1) {
+            this.wires.push({ from: i, to: j });
+          } else if (dc === 1 && dr === 1 && Math.random() < 0.38) {
+            this.wires.push({ from: i, to: j });
+          }
+        }
+      }
+    },
+
+    send: function (fromIdx) {
+      var nn = this.nodes, wires = this.wires;
+      var targets = [];
+      wires.forEach(function (w) {
+        if (w.from === fromIdx) targets.push(w.to);
+        else if (w.to === fromIdx) targets.push(w.from);
+      });
+      if (!targets.length) return;
+      var toIdx = targets[Math.floor(Math.random() * targets.length)];
+      var f = nn[fromIdx], t = nn[toIdx];
+      this.pkts.push({
+        x0: f.x + f.w / 2, y0: f.y + f.h / 2,
+        x1: t.x + t.w / 2, y1: t.y + t.h / 2,
+        dest: toIdx, t: 0,
+        spd: 0.011 + Math.random() * 0.009,
+      });
+      f.act = 1; f.actT = 28;
+    },
+
+    update: function () {
+      var self = this;
+      var nn = this.nodes;
+      nn.forEach(function (n, i) {
+        if (n.actT > 0) { n.actT--; n.act = n.actT / 28; }
+        if (--n.sendT <= 0) {
+          n.sendT = 55 + Math.random() * 160;
+          self.send(i);
+        }
+      });
+      this.pkts = this.pkts.filter(function (p) {
+        p.t += p.spd;
+        if (p.t >= 1) {
+          var tn = nn[p.dest];
+          tn.act = 1; tn.actT = 28;
+          return false;
+        }
+        return true;
+      });
+    },
+
+    draw: function () {
+      var C = '176,128,48';
+      ctx.save();
+      ctx.globalAlpha = 0.12;
+
+      // Wires
+      this.wires.forEach(function (w) {
+        var a = HPC.nodes[w.from], b = HPC.nodes[w.to];
+        ctx.strokeStyle = 'rgba(' + C + ',0.45)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(a.x + a.w / 2, a.y + a.h / 2);
+        ctx.lineTo(b.x + b.w / 2, b.y + b.h / 2);
+        ctx.stroke();
+      });
+
+      // Packets (small bright squares)
+      this.pkts.forEach(function (p) {
+        var x = p.x0 + (p.x1 - p.x0) * p.t;
+        var y = p.y0 + (p.y1 - p.y0) * p.t;
+        ctx.fillStyle = 'rgba(' + C + ',1)';
+        ctx.fillRect(x - 3.5, y - 3.5, 7, 7);
+      });
+
+      // Compute node rectangles
+      this.nodes.forEach(function (n) {
+        var a = 0.18 + n.act * 0.65;
+
+        if (n.act > 0.15) {
+          ctx.shadowColor = 'rgba(' + C + ',0.55)';
+          ctx.shadowBlur  = 14;
+        }
+
+        ctx.strokeStyle = 'rgba(' + C + ',' + a + ')';
+        ctx.lineWidth   = 1.5;
+        ctx.strokeRect(n.x, n.y, n.w, n.h);
+        ctx.fillStyle   = 'rgba(' + C + ',' + (a * 0.32) + ')';
+        ctx.fillRect(n.x, n.y, n.w, n.h);
+        ctx.shadowBlur  = 0;
+
+        // Status LEDs
+        for (var d = 0; d < 3; d++) {
+          var lx = n.x + 8 + d * 13;
+          var ly = n.y + n.h / 2;
+          ctx.fillStyle = 'rgba(' + C + ',' + (n.act > 0.5 ? 0.9 : 0.22) + ')';
+          ctx.beginPath();
+          ctx.arc(lx, ly, 1.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+
+      ctx.restore();
+    }
+  };
+
+  // ── Animation loop ───────────────────────────────────────────────────────
+  function loop() {
+    if (paused) return;
+    ctx.clearRect(0, 0, W, H);
+    NN.update();  NN.draw();
+    HPC.update(); HPC.draw();
+    raf = requestAnimationFrame(loop);
+  }
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      paused = true;
+      if (raf) cancelAnimationFrame(raf);
+    } else {
+      paused = false;
+      raf = requestAnimationFrame(loop);
+    }
+  });
+
+  window.addEventListener('resize', resize);
+  resize();
+  raf = requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
