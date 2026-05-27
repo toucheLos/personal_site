@@ -1,0 +1,7 @@
+{
+  "name": "personal-site",
+  "private": true,
+  "scripts": {
+    "build": "cd gomoku/gomoku-enhanced && npm install && npm run build && cd ../.. && mkdir -p public/gomoku && cp index.html public/ && cp -r gomoku/gomoku-enhanced/dist/. public/gomoku/"
+  }
+}
