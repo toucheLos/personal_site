@@ -94,6 +94,32 @@
       border-top: 1px solid #e8e8e8;
     }
 
+    /* ── Play Gomoku button ─────────────── */
+    #play-gomoku {
+      position: fixed;
+      top: 20px;
+      right: 24px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #4a6fa5;
+      text-decoration: none;
+      padding: 6px 13px;
+      border: 1px solid #c8d8e8;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 100;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    #play-gomoku:hover {
+      background: #f0f4fa;
+      border-color: #4a6fa5;
+    }
+
     /* ── Research Papers ────────────────── */
     .paper-list {
       list-style: none;
@@ -334,6 +360,8 @@
 
 <canvas id="bg-canvas"></canvas>
 
+<a id="play-gomoku" href="/gomoku/" target="_blank" rel="noopener noreferrer">Play Gomoku</a>
+
 <div id="content">
   <header>
     <h1>Carlos Eckert</h1>
@@ -408,14 +436,6 @@
         <article class="project-card">
           <div class="project-name">Personal AI Agent</div>
           <div class="project-desc">FastAPI + Expo mobile interface with proactive scheduling loop.</div>
-          <span class="project-tag">Project</span>
-        </article>
-        <article class="project-card">
-          <div class="project-name">
-            <a href="/gomoku/" target="_blank" rel="noopener noreferrer"
-               style="color: inherit; text-decoration: none;">Gomoku</a>
-          </div>
-          <div class="project-desc">15×15 five-in-a-row with AI opponent and peer-to-peer multiplayer.</div>
           <span class="project-tag">Project</span>
         </article>
       </div>
