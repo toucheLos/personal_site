@@ -70,7 +70,15 @@ export type PeerMessage =
   | { type: 'move'; row: number; col: number }
   | { type: 'rematch-request'; name: string }
   | { type: 'rematch-accept' }
-  | { type: 'resign' };
+  | { type: 'resign' }
+  | { type: 'chat'; text: string; sender: string };
+
+export interface ChatMessage {
+  text: string;
+  sender: string;
+  timestamp: string;
+  isMe: boolean;
+}
 
 export function getWinLine(board: Cell[][], row: number, col: number, player: Cell): [number, number][] | null {
   const dirs = [[0, 1], [1, 0], [1, 1], [1, -1]];

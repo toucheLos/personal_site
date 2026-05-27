@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Board from './components/Board';
 import MoveNavigator from './components/MoveNavigator';
@@ -15,6 +15,14 @@ import {
   saveGame, loadAutosave, clearAutosave, loadHistory, appendToHistory,
   loadDisplayName,
 } from './storage';
+
+const TURN_SECONDS = 300; // 5 minutes
+
+function formatTime(s: number): string {
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${m}:${sec.toString().padStart(2, '0')}`;
+}
 
 function newGame(fromState?: GameState, fromMoveIndex?: number): GameState {
   if (fromState && fromMoveIndex !== undefined) {
@@ -37,7 +45,7 @@ function boardAtMove(allMoves: Move[], upTo: number): { board: Cell[][], lastMov
   return { board, lastMove };
 }
 
-type Tab = 'game' | 'history';
+type Tab = 'game' | 'history' | 'chat';
 
 export default function App() {
   // ── Game state ─────────────────────────────────────────────────────
@@ -56,6 +64,19 @@ export default function App() {
   const [peerRole, setPeerRole] = useState<PeerRole | null>(null);
   const [peerRoomCode, setPeerRoomCode] = useState<string | null>(null);
   const [rematchState, setRematchState] = useState<'idle' | 'i-requested' | 'peer-requested'>('idle');
+
+  // ── Timer state ────────────────────────────────────────────────────
+  const [timeLeft, setTimeLeft] = useState(TURN_SECONDS);
+
+  // ── Resign confirm ─────────────────────────────────────────────────
+  const [confirmResign, setConfirmResign] = useState(false);
+
+  // ── Chat UI state ──────────────────────────────────────────────────
+  const [chatInput, setChatInput] = useState('');
+  const [unreadChat, setUnreadChat] = useState(0);
+  const chatScrollRef = useRef<HTMLDivElement>(null);
+  const prevChatLenRef = useRef(0);
+  const activeTabRef = useRef<Tab>('game');
 
   // ── Derived ───────────────────────────────────────────────────────
   const displayGame = replayGame ?? game;
@@ -89,16 +110,33 @@ export default function App() {
     peerMove,
     peerWantsRematch,
     peerAcceptedRematch,
+    peerResigned,
+    chatMessages,
     sendMove,
     sendRematchRequest,
     sendRematchAccept,
+    sendResign,
+    sendChat,
     clearPeerMove,
     clearPeerAcceptedRematch,
+    clearPeerResigned,
+    reconnect: peerReconnect,
     error: peerError,
   } = usePeerGame(peerRole, displayName, peerRoomCode, currentPlayer);
 
   // ── Callbacks ─────────────────────────────────────────────────────
   const refreshHistory = useCallback(() => setHistory(loadHistory()), []);
+
+  const handleGameOver = useCallback((winner: Player) => {
+    setGame(prev => {
+      if (prev.winner) return prev;
+      const next = { ...prev, winner };
+      appendToHistory(next);
+      clearAutosave();
+      setHistory(loadHistory());
+      return next;
+    });
+  }, []);
 
   const handlePlace = useCallback((row: number, col: number) => {
     if (game.winner || viewIndex !== -1 || replayGame) return;
@@ -162,10 +200,44 @@ export default function App() {
   const navLast = () => setViewIndex(-1);
   const navJump = (i: number) => setViewIndex(Math.max(0, Math.min(i, displayGame.moves.length - 1)));
 
+  // ── Timer derived ─────────────────────────────────────────────────
+  const timerRunning =
+    !game.winner &&
+    viewIndex === -1 &&
+    !replayGame &&
+    (appMode === 'local-vs-bot' || (appMode === 'online-game' && isConnected)) &&
+    !(appMode === 'local-vs-bot' && currentPlayer === 'white') &&
+    !(appMode === 'online-game' && !isPeerMyTurn);
+
   // ── Effects ───────────────────────────────────────────────────────
   useEffect(() => {
     if (!replayGame) saveGame(game);
   }, [game, replayGame]);
+
+  // Reset timer on new game or new move
+  useEffect(() => {
+    setTimeLeft(TURN_SECONDS);
+    setConfirmResign(false);
+  }, [game.id, game.moves.length]);
+
+  // Timer countdown
+  useEffect(() => {
+    if (!timerRunning || timeLeft <= 0) return;
+    const t = setInterval(() => setTimeLeft(s => s - 1), 1000);
+    return () => clearInterval(t);
+  }, [timerRunning, timeLeft]);
+
+  // Timer expiry → forfeit
+  useEffect(() => {
+    if (timeLeft > 0 || !timerRunning || game.winner) return;
+    if (appMode === 'local-vs-bot') {
+      handleGameOver('white');
+    } else if (appMode === 'online-game') {
+      sendResign();
+      const opponent: Player = (myPeerColor ?? 'black') === 'black' ? 'white' : 'black';
+      handleGameOver(opponent);
+    }
+  }, [timeLeft, timerRunning, game.winner, appMode, myPeerColor, handleGameOver, sendResign]);
 
   // Bot plays white in local-vs-bot mode
   useEffect(() => {
@@ -199,6 +271,13 @@ export default function App() {
     startNewGame();
   }, [peerAcceptedRematch, rematchState, clearPeerAcceptedRematch, startNewGame]);
 
+  // Peer resigned → I win
+  useEffect(() => {
+    if (!peerResigned || appMode !== 'online-game') return;
+    clearPeerResigned();
+    if (myPeerColor) handleGameOver(myPeerColor);
+  }, [peerResigned, appMode, myPeerColor, clearPeerResigned, handleGameOver]);
+
   // Transition waiting → online-game once connected
   useEffect(() => {
     if (appMode === 'online-waiting' && isConnected) {
@@ -206,6 +285,26 @@ export default function App() {
       setAppMode('online-game');
     }
   }, [isConnected, appMode, startNewGame]);
+
+  // Track active tab in ref for chat unread logic
+  useEffect(() => { activeTabRef.current = activeTab; }, [activeTab]);
+
+  // Chat unread badge
+  useEffect(() => {
+    if (chatMessages.length <= prevChatLenRef.current) return;
+    const newMsgs = chatMessages.slice(prevChatLenRef.current);
+    prevChatLenRef.current = chatMessages.length;
+    if (activeTabRef.current !== 'chat' && newMsgs.some(m => !m.isMe)) {
+      setUnreadChat(n => n + newMsgs.filter(m => !m.isMe).length);
+    }
+  }, [chatMessages]);
+
+  // Auto-scroll chat to bottom
+  useEffect(() => {
+    if (chatScrollRef.current) {
+      chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
+    }
+  }, [chatMessages]);
 
   // ── Board interaction ─────────────────────────────────────────────
   const handleBoardClick = useCallback((row: number, col: number) => {
@@ -295,6 +394,9 @@ export default function App() {
     }
     startNewGame();
     setAppMode('select');
+    setConfirmResign(false);
+    setUnreadChat(0);
+    if (activeTab === 'chat') setActiveTab('game');
   };
 
   // ── Rematch button ────────────────────────────────────────────────
@@ -350,64 +452,87 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#111] text-stone-200 flex flex-col">
       {/* Header */}
-      <header className="flex items-center justify-between px-5 py-3 border-b border-stone-800/80">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <div className="w-3.5 h-3.5 rounded-full bg-[#111] border-2 border-stone-600" />
-            <div className="w-3.5 h-3.5 rounded-full bg-stone-100 border border-stone-400" />
+      <header className="flex items-center justify-between px-3 md:px-5 py-2 md:py-3 border-b border-stone-800/80 gap-2">
+        <div className="flex items-center gap-2 md:gap-3 min-w-0">
+          <a
+            href="/"
+            className="text-xs text-stone-600 hover:text-stone-400 transition-colors whitespace-nowrap flex-shrink-0"
+            title="Back to portfolio"
+          >
+            ← Portfolio
+          </a>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 md:w-3.5 md:h-3.5 rounded-full bg-[#111] border-2 border-stone-600 flex-shrink-0" />
+            <div className="w-3 h-3 md:w-3.5 md:h-3.5 rounded-full bg-stone-100 border border-stone-400 flex-shrink-0" />
           </div>
-          <span className="text-stone-300 font-medium tracking-wide text-sm">Gomoku</span>
+          <span className="text-stone-300 font-medium tracking-wide text-sm flex-shrink-0">Gomoku</span>
           {isViewingReplay && (
-            <span className="text-xs px-2 py-0.5 rounded-full bg-amber-900/30 text-amber-500 border border-amber-800/40">
+            <span className="text-xs px-1.5 py-0.5 rounded-full bg-amber-900/30 text-amber-500 border border-amber-800/40 flex-shrink-0">
               Replay
             </span>
           )}
           {isViewingHistory && !isViewingReplay && (
-            <span className="text-xs px-2 py-0.5 rounded-full bg-stone-800 text-stone-500 border border-stone-700">
-              Move {viewIndex + 1} of {displayGame.moves.length}
+            <span className="hidden sm:inline text-xs px-1.5 py-0.5 rounded-full bg-stone-800 text-stone-500 border border-stone-700">
+              Move {viewIndex + 1}/{displayGame.moves.length}
             </span>
           )}
           {appMode === 'online-game' && !isViewingReplay && (
-            <span className="text-xs text-stone-500">
+            <span className="hidden md:inline text-xs text-stone-500 truncate">
               {blackName} vs {whiteName}
             </span>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
           {isViewingReplay && (
             <button
               onClick={() => { setReplayGame(null); setViewIndex(-1); }}
-              className="text-xs py-1 px-3 rounded border border-stone-700 text-stone-400 hover:text-stone-200 hover:border-stone-500 transition-colors"
+              className="text-xs py-1 px-2 md:px-3 rounded border border-stone-700 text-stone-400 hover:text-stone-200 hover:border-stone-500 transition-colors"
             >
               Exit replay
             </button>
           )}
           <button
             onClick={goToMenu}
-            className="text-xs py-1 px-3 rounded border border-stone-700 text-stone-300 hover:bg-stone-800 transition-colors"
+            className="text-xs py-1 px-2 md:px-3 rounded border border-stone-700 text-stone-300 hover:bg-stone-800 transition-colors"
           >
             Menu
           </button>
           <button
             onClick={() => { setHistoryOpen((o) => !o); setActiveTab('history'); }}
-            className={`text-xs py-1 px-3 rounded border transition-colors ${
+            className={`text-xs py-1 px-2 md:px-3 rounded border transition-colors ${
               historyOpen
                 ? 'border-amber-700/50 text-amber-500 bg-amber-900/20'
                 : 'border-stone-700 text-stone-400 hover:text-stone-200'
             }`}
           >
-            History {history.length > 0 && `(${history.length})`}
+            History{history.length > 0 ? ` (${history.length})` : ''}
           </button>
         </div>
       </header>
 
-      {/* Main layout */}
-      <div className="flex flex-1 overflow-hidden" style={{ minHeight: 0 }}>
-        <main className="flex-1 flex flex-col items-center justify-center gap-4 p-4 overflow-auto">
+      {/* Main layout — stacked on mobile, side-by-side on md+ */}
+      <div className="flex flex-1 overflow-hidden flex-col md:flex-row" style={{ minHeight: 0 }}>
+
+        {/* Board area */}
+        <main className="flex-1 flex flex-col items-center justify-center gap-2 md:gap-4 p-2 md:p-4 overflow-auto min-h-0">
+
+          {/* Connection lost banner */}
+          {appMode === 'online-game' && !isConnected && !game.winner && (
+            <div className="flex items-center gap-3 px-3 py-2 rounded-lg border border-red-900/40 bg-red-950/30 text-xs">
+              <span className="text-red-400">Connection lost</span>
+              <button
+                onClick={peerReconnect}
+                className="text-amber-400 underline underline-offset-2 hover:no-underline"
+              >
+                Reconnect
+              </button>
+            </div>
+          )}
+
           {/* Status bar */}
-          <div className="flex items-center gap-3 h-8 flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap justify-center min-h-[28px]">
             {game.winner && !isViewingReplay ? (
-              <div className="flex items-center gap-2 px-4 py-2 rounded-lg border border-amber-700/40 bg-amber-900/20 text-sm flex-wrap">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-amber-700/40 bg-amber-900/20 text-sm flex-wrap justify-center">
                 <StoneIndicator player={game.winner} />
                 <span className="font-medium text-amber-400">{winnerName} wins!</span>
                 {rematchButton}
@@ -424,7 +549,7 @@ export default function App() {
                 <span className="capitalize">{replayGame.winner} won · {replayGame.moves.length} moves</span>
               </div>
             ) : !isViewingReplay ? (
-              <div className="flex items-center gap-2 text-xs text-stone-400">
+              <div className="flex items-center gap-2 text-xs text-stone-400 flex-wrap justify-center">
                 <StoneIndicator player={currentPlayer} />
                 {appMode === 'local-vs-bot' && currentPlayer === 'white' ? (
                   <span>{opponentName} thinking...</span>
@@ -436,8 +561,46 @@ export default function App() {
                     )}
                   </span>
                 )}
+                {timerRunning && (
+                  <span className={`font-mono ml-1 tabular-nums ${
+                    timeLeft < 10 ? 'text-red-400 animate-pulse' :
+                    timeLeft < 30 ? 'text-red-500' :
+                    timeLeft < 60 ? 'text-amber-500' :
+                    'text-stone-600'
+                  }`}>
+                    {formatTime(timeLeft)}
+                  </span>
+                )}
                 {game.moves.length > 0 && (
                   <span className="text-stone-600">· move {game.moves.length + 1}</span>
+                )}
+                {/* Resign button (online mode) */}
+                {appMode === 'online-game' && !game.winner && !isViewingReplay && (
+                  confirmResign ? (
+                    <span className="flex items-center gap-1 ml-1">
+                      <span className="text-stone-500">Resign?</span>
+                      <button
+                        onClick={() => {
+                          setConfirmResign(false);
+                          sendResign();
+                          const opponent: Player = (myPeerColor ?? 'black') === 'black' ? 'white' : 'black';
+                          handleGameOver(opponent);
+                        }}
+                        className="py-0.5 px-1.5 rounded bg-red-900/50 text-red-300 border border-red-800/50 hover:bg-red-900/70 transition-colors"
+                      >Yes</button>
+                      <button
+                        onClick={() => setConfirmResign(false)}
+                        className="py-0.5 px-1.5 rounded border border-stone-700 text-stone-400 hover:text-stone-200 transition-colors"
+                      >No</button>
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => setConfirmResign(true)}
+                      className="ml-1 text-xs py-0.5 px-2 rounded border border-red-900/40 text-red-600/70 hover:text-red-400 hover:border-red-800 transition-colors"
+                    >
+                      Resign
+                    </button>
+                  )
                 )}
               </div>
             ) : null}
@@ -453,41 +616,106 @@ export default function App() {
           />
         </main>
 
-        {/* Right panel */}
-        <aside className="w-64 flex-shrink-0 flex flex-col border-l border-stone-800 bg-[#0e0e0e]">
+        {/* Right panel — bottom strip on mobile, sidebar on desktop */}
+        <aside className="w-full md:w-60 flex-shrink-0 flex flex-col border-t md:border-t-0 md:border-l border-stone-800 bg-[#0e0e0e] h-48 md:h-auto">
           <div className="flex border-b border-stone-800">
-            <TabBtn active={activeTab === 'game'} onClick={() => setActiveTab('game')}>Navigator</TabBtn>
-            <TabBtn active={activeTab === 'history'} onClick={() => setActiveTab('history')}>
-              History{history.length > 0 ? ` (${history.length})` : ''}
+            <TabBtn active={activeTab === 'game'} onClick={() => setActiveTab('game')}>
+              <span className="hidden md:inline">Navigator</span>
+              <span className="md:hidden">Nav</span>
             </TabBtn>
+            <TabBtn active={activeTab === 'history'} onClick={() => setActiveTab('history')}>
+              <span className="hidden md:inline">History{history.length > 0 ? ` (${history.length})` : ''}</span>
+              <span className="md:hidden">History</span>
+            </TabBtn>
+            {appMode === 'online-game' && (
+              <TabBtn
+                active={activeTab === 'chat'}
+                onClick={() => { setActiveTab('chat'); setUnreadChat(0); }}
+              >
+                Chat{unreadChat > 0 ? ` (${unreadChat})` : ''}
+              </TabBtn>
+            )}
           </div>
-          <div className="flex-1 overflow-y-auto p-3">
-            {activeTab === 'game' ? (
-              <MoveNavigator
-                moves={displayGame.moves}
-                viewIndex={viewIndex}
-                totalMoves={displayGame.moves.length}
-                onFirst={navFirst}
-                onPrev={navPrev}
-                onNext={navNext}
-                onLast={navLast}
-                onJump={navJump}
-                onResumeFromHere={handleResumeFromHere}
-                isViewingHistory={isViewingReplay && viewIndex !== -1}
-              />
-            ) : (
-              <GameHistory
-                history={history}
-                onReplay={handleReplay}
-                onHistoryChange={refreshHistory}
-              />
+          <div className="flex-1 overflow-y-auto min-h-0">
+            {activeTab === 'game' && (
+              <div className="p-2 md:p-3">
+                <MoveNavigator
+                  moves={displayGame.moves}
+                  viewIndex={viewIndex}
+                  totalMoves={displayGame.moves.length}
+                  onFirst={navFirst}
+                  onPrev={navPrev}
+                  onNext={navNext}
+                  onLast={navLast}
+                  onJump={navJump}
+                  onResumeFromHere={handleResumeFromHere}
+                  isViewingHistory={isViewingReplay && viewIndex !== -1}
+                />
+              </div>
+            )}
+            {activeTab === 'history' && (
+              <div className="p-2 md:p-3">
+                <GameHistory
+                  history={history}
+                  onReplay={handleReplay}
+                  onHistoryChange={refreshHistory}
+                />
+              </div>
+            )}
+            {activeTab === 'chat' && appMode === 'online-game' && (
+              <div className="flex flex-col h-full">
+                <div
+                  ref={chatScrollRef}
+                  className="flex-1 overflow-y-auto p-2 space-y-2 min-h-0"
+                >
+                  {chatMessages.length === 0 ? (
+                    <p className="text-xs text-stone-600 text-center mt-3">No messages yet</p>
+                  ) : (
+                    chatMessages.map((msg, i) => (
+                      <div key={i} className={`flex flex-col ${msg.isMe ? 'items-end' : 'items-start'}`}>
+                        <span className="text-xs text-stone-600 mb-0.5">{msg.sender}</span>
+                        <div className={`px-2 py-1 rounded text-xs max-w-[85%] break-words ${
+                          msg.isMe
+                            ? 'bg-amber-900/40 text-amber-200 border border-amber-800/40'
+                            : 'bg-stone-800 text-stone-300 border border-stone-700'
+                        }`}>
+                          {msg.text}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+                <div className="flex gap-1 p-2 border-t border-stone-800 flex-shrink-0">
+                  <input
+                    value={chatInput}
+                    onChange={e => setChatInput(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' && chatInput.trim()) {
+                        sendChat(chatInput.trim());
+                        setChatInput('');
+                      }
+                    }}
+                    placeholder="Message..."
+                    maxLength={200}
+                    className="flex-1 bg-stone-900 border border-stone-700 rounded px-2 py-1 text-xs text-stone-200 placeholder-stone-600 focus:outline-none focus:border-stone-500 min-w-0"
+                  />
+                  <button
+                    onClick={() => {
+                      if (chatInput.trim()) { sendChat(chatInput.trim()); setChatInput(''); }
+                    }}
+                    className="px-2 py-1 rounded border border-stone-700 text-stone-400 hover:text-stone-200 text-xs flex-shrink-0 transition-colors"
+                  >
+                    ↑
+                  </button>
+                </div>
+              </div>
             )}
           </div>
         </aside>
       </div>
 
       {/* Footer */}
-      <footer className="px-5 py-1.5 border-t border-stone-900 flex items-center justify-between text-xs text-stone-700">
+      <footer className="px-3 md:px-5 py-1.5 border-t border-stone-900 flex items-center justify-between text-xs text-stone-700">
         <span>15×15 · Five in a row wins</span>
         {!isViewingReplay && <span>Move {game.moves.length}</span>}
       </footer>
@@ -514,7 +742,7 @@ function TabBtn({ active, onClick, children }: { active: boolean; onClick: () =>
   return (
     <button
       onClick={onClick}
-      className={`flex-1 py-2.5 text-xs transition-colors ${
+      className={`flex-1 py-2 text-xs transition-colors ${
         active
           ? 'text-stone-200 border-b-2 border-amber-600 bg-stone-900/30'
           : 'text-stone-500 hover:text-stone-300 border-b-2 border-transparent'

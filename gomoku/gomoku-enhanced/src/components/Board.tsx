@@ -56,6 +56,18 @@ export default function Board({ board, currentPlayer, winLine, lastMove, viewOnl
     }
   }, [nearestCell, board, onPlace, viewOnly]);
 
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (viewOnly) return;
+    e.preventDefault(); // prevent ghost click
+    const touch = e.changedTouches[0];
+    if (!touch) return;
+    const cell = nearestCell(touch.clientX, touch.clientY);
+    if (cell && board[cell[0]][cell[1]] === 0) {
+      onPlace(cell[0], cell[1]);
+      setHover(null);
+    }
+  }, [nearestCell, board, onPlace, viewOnly]);
+
   const winSet = new Set(winLine?.map(([r, c]) => `${r},${c}`) ?? []);
 
   return (
@@ -64,10 +76,11 @@ export default function Board({ board, currentPlayer, winLine, lastMove, viewOnl
       data-board="gomoku"
       viewBox={`0 0 ${SIZE} ${SIZE}`}
       width="100%"
-      style={{ maxWidth: '560px', display: 'block', cursor: viewOnly ? 'default' : 'crosshair', userSelect: 'none' }}
+      style={{ maxWidth: '560px', display: 'block', cursor: viewOnly ? 'default' : 'crosshair', userSelect: 'none', touchAction: 'none' }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={handleClick}
+      onTouchEnd={handleTouchEnd}
     >
       {/* Board background */}
       <rect width={SIZE} height={SIZE} fill="#1c1c1c" rx="6" />
@@ -138,9 +151,7 @@ export default function Board({ board, currentPlayer, winLine, lastMove, viewOnl
 
           return (
             <g key={`stone-${r}-${c}`}>
-              {/* Shadow */}
               <circle cx={x + 1.5} cy={y + 2} r={STONE_R} fill="rgba(0,0,0,0.4)" />
-              {/* Stone body */}
               <circle
                 cx={x} cy={y} r={STONE_R}
                 fill={isBlack
@@ -150,13 +161,11 @@ export default function Board({ board, currentPlayer, winLine, lastMove, viewOnl
                 stroke={isWin ? '#c8a96e' : (isBlack ? '#000' : '#bbb')}
                 strokeWidth={isWin ? 2 : 0.5}
               />
-              {/* Last move marker */}
               {isLast && !isWin && (
                 <circle cx={x} cy={y} r={STONE_R * 0.28}
                   fill={isBlack ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)'}
                 />
               )}
-              {/* Win marker */}
               {isWin && (
                 <circle cx={x} cy={y} r={STONE_R * 0.3}
                   fill="none" stroke="#c8a96e" strokeWidth={1.5}
