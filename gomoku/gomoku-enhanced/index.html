@@ -4,9 +4,36 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gomoku-enhanced</title>
+    <title>Gomoku</title>
+    <style>
+      #portfolio-back {
+        position: fixed;
+        top: 20px;
+        left: 24px;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #a8a29e;
+        text-decoration: none;
+        padding: 6px 13px;
+        border: 1px solid #3a3632;
+        border-radius: 3px;
+        background: rgba(17, 17, 17, 0.92);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 200;
+        transition: background 0.15s, border-color 0.15s, color 0.15s;
+      }
+      #portfolio-back:hover {
+        background: #1e1e1e;
+        border-color: #6b6357;
+        color: #e8e4dc;
+      }
+    </style>
   </head>
   <body>
+    <a id="portfolio-back" href="/">← Portfolio</a>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

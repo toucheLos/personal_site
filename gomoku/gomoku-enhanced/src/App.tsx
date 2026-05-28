@@ -454,13 +454,6 @@ export default function App() {
       {/* Header */}
       <header className="flex items-center justify-between px-3 md:px-5 py-2 md:py-3 border-b border-stone-800/80 gap-2">
         <div className="flex items-center gap-2 md:gap-3 min-w-0">
-          <a
-            href="/"
-            className="text-xs text-stone-600 hover:text-stone-400 transition-colors whitespace-nowrap flex-shrink-0"
-            title="Back to portfolio"
-          >
-            ← Portfolio
-          </a>
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 md:w-3.5 md:h-3.5 rounded-full bg-[#111] border-2 border-stone-600 flex-shrink-0" />
             <div className="w-3 h-3 md:w-3.5 md:h-3.5 rounded-full bg-stone-100 border border-stone-400 flex-shrink-0" />

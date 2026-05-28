@@ -32,21 +32,12 @@ export default function ModeSelect({ playerName, onSelectBot, onSelectFriend, on
             Play vs Friend
           </button>
         </div>
-        <div className="flex items-center gap-4">
-          <button
-            onClick={onChangeName}
-            className="text-xs text-stone-600 hover:text-stone-400 transition-colors"
-          >
-            Change name
-          </button>
-          <span className="text-stone-800">·</span>
-          <a
-            href="/"
-            className="text-xs text-stone-600 hover:text-stone-400 transition-colors"
-          >
-            ← Portfolio
-          </a>
-        </div>
+        <button
+          onClick={onChangeName}
+          className="text-xs text-stone-600 hover:text-stone-400 transition-colors"
+        >
+          Change name
+        </button>
       </div>
     </div>
   );
