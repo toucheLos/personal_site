@@ -173,13 +173,8 @@
       vertical-align: -2px;
       width: 12px;
       height: 12px;
-      fill: #bbb;
-      margin-left: 5px;
-      transition: fill 0.1s;
-    }
-
-    .paper-title a:hover .gh-icon {
-      fill: #4a6fa5;
+      fill: currentColor;
+      margin-left: 2px;
     }
 
     .paper-icon-link {
@@ -334,6 +329,110 @@
       }
 
     }
+
+    /* ── Simulations ────────────────────── */
+    .sim-card { margin-bottom: 2rem; }
+
+    .sim-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.6rem;
+    }
+
+    .sim-title {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #888;
+    }
+
+    .sim-btn {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 4px 10px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      background: #fff;
+      color: #666;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .sim-btn:hover {
+      background: #f5f5f5;
+      border-color: #4a6fa5;
+      color: #4a6fa5;
+    }
+
+    #hh-widget-canvas,
+    #hpc-widget-canvas {
+      display: block;
+      width: 100%;
+      max-width: 540px;
+      border: 1px solid #e8e8e8;
+      border-radius: 3px;
+      background: #0c0a09;
+    }
+
+    .sim-desc {
+      margin-top: 0.5rem;
+      font-size: 12px;
+      color: #888;
+      line-height: 1.55;
+      font-style: italic;
+    }
+
+    /* ── Ion Channel Panel ──────────────────── */
+    #channel-panel {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 10px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      padding: 9px 13px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      color: #555;
+      min-width: 130px;
+    }
+
+    #channel-panel .cp-label {
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #999;
+      margin-bottom: 2px;
+      font-size: 9px;
+    }
+
+    #channel-panel label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      line-height: 1.4;
+    }
+
+    #channel-panel input[type="checkbox"] {
+      width: 11px;
+      height: 11px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 767px) {
+      #channel-panel { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -359,49 +458,45 @@
       <h2 class="section-label" id="lbl-research">Research</h2>
       <ul class="paper-list">
         <li>
-          <span class="paper-title">
-            <a href="https://github.com/toucheLos/catan_agent" target="_blank" rel="noopener noreferrer">
-              Catan Agent
+          <span class="paper-title">Catan Agent</span>
+          <span class="paper-venue">
+            <a href="https://github.com/toucheLos/catan_agent" target="_blank" rel="noopener noreferrer" class="paper-icon-link" title="GitHub">
               <svg class="gh-icon" viewBox="0 0 16 16" aria-label="GitHub" role="img"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
             </a>
             <a href="#" class="paper-icon-link" title="Paper (coming soon)">
               <svg class="doc-icon" viewBox="0 0 16 16" aria-label="Paper" role="img"><path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/><path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/></svg>
             </a>
           </span>
-          <span class="paper-venue">Temple University, 2026</span>
         </li>
         <li>
-          <span class="paper-title">
-            <a href="https://github.com/toucheLos/numerical_stability_in_neurovisor" target="_blank" rel="noopener noreferrer">
-              Forward Euler Validation Against Yale NEURON Solver
+          <span class="paper-title">Forward Euler Validation Against Yale NEURON Solver</span>
+          <span class="paper-venue">
+            <a href="https://github.com/toucheLos/numerical_stability_in_neurovisor" target="_blank" rel="noopener noreferrer" class="paper-icon-link" title="GitHub">
               <svg class="gh-icon" viewBox="0 0 16 16" aria-label="GitHub" role="img"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
             </a>
             <a href="#" class="paper-icon-link" title="Paper (coming soon)">
               <svg class="doc-icon" viewBox="0 0 16 16" aria-label="Paper" role="img"><path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/><path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/></svg>
             </a>
           </span>
-          <span class="paper-venue">Temple University, 2026</span>
         </li>
         <li>
-          <span class="paper-title">
-            <a href="https://github.com/toucheLos/Neuro-VISOR-Dynamic-Modeling-of-Ion-Channels" target="_blank" rel="noopener noreferrer">
-              Dynamic Modeling of Ion Channels in NeuroVISOR
+          <span class="paper-title">Dynamic Modeling of Ion Channels in NeuroVISOR</span>
+          <span class="paper-venue">
+            <a href="https://github.com/toucheLos/Neuro-VISOR-Dynamic-Modeling-of-Ion-Channels" target="_blank" rel="noopener noreferrer" class="paper-icon-link" title="GitHub">
               <svg class="gh-icon" viewBox="0 0 16 16" aria-label="GitHub" role="img"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
             </a>
             <a href="#" class="paper-icon-link" title="Paper (coming soon)">
               <svg class="doc-icon" viewBox="0 0 16 16" aria-label="Paper" role="img"><path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/><path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/></svg>
             </a>
           </span>
-          <span class="paper-venue">Temple University, 2026</span>
         </li>
         <li>
-          <span class="paper-title">
-            <a href="https://github.com/toucheLos/VIEB" target="_blank" rel="noopener noreferrer">
-              VIEB: Unsupervised Behavioral State Discovery in Conditioned Fear Mouse Models
+          <span class="paper-title">VIEB: Unsupervised Behavioral State Discovery in Conditioned Fear Mouse Models</span>
+          <span class="paper-venue">
+            <a href="https://github.com/toucheLos/VIEB" target="_blank" rel="noopener noreferrer" class="paper-icon-link" title="GitHub">
               <svg class="gh-icon" viewBox="0 0 16 16" aria-label="GitHub" role="img"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
             </a>
           </span>
-          <span class="paper-venue">Temple University, 2026</span>
         </li>
       </ul>
     </section>
@@ -482,6 +577,28 @@
       <div class="edu-meta">Temple University &middot; May 2026</div>
     </section>
 
+    <section aria-labelledby="lbl-simulations">
+      <h2 class="section-label" id="lbl-simulations">Simulations</h2>
+
+      <div class="sim-card">
+        <div class="sim-header">
+          <span class="sim-title">Hodgkin-Huxley Neuron</span>
+          <button id="hh-inject-btn" class="sim-btn">Inject current</button>
+        </div>
+        <canvas id="hh-widget-canvas" width="540" height="200"></canvas>
+        <p class="sim-desc">Real-time simulation of a single neuron using the 1952 Hodgkin-Huxley model (Na&#8314;/K&#8314; channels). Each click injects 15&nbsp;&#956;A/cm&#178; for 1&nbsp;ms &#8212; enough to trigger an action potential.</p>
+      </div>
+
+      <div class="sim-card">
+        <div class="sim-header">
+          <span class="sim-title">Stigmergic Swarm</span>
+          <button id="hpc-submit-btn" class="sim-btn">Add task</button>
+        </div>
+        <canvas id="hpc-widget-canvas" width="540" height="260"></canvas>
+        <p class="sim-desc">Eight agents (researcher, coder, reasoner, memory) coordinate without a central controller. Agents deposit pheromone task markers, seek nearby signals, and leave result traces — emergent collective behavior from simple local rules.</p>
+      </div>
+    </section>
+
   </main>
 
   <footer>
@@ -503,6 +620,8 @@ document.getElementById('yr').textContent = new Date().getFullYear();
   });
 })();
 
+var channels = { M: true, T: false, H: false };
+
 // ── Canvas Background ────────────────────────────────────────────────────────
 (function () {
   var canvas = document.getElementById('bg-canvas');
@@ -511,306 +630,411 @@ document.getElementById('yr').textContent = new Date().getFullYear();
   var raf = null;
   var paused = false;
 
+  function hhRates(V) {
+    var dv40 = V + 40;
+    var am = Math.abs(dv40) < 1e-7 ? 1.0 : 0.1 * dv40 / (1 - Math.exp(-dv40 / 10));
+    var bm = 4.0 * Math.exp(-(V + 65) / 18);
+    var ah = 0.07 * Math.exp(-(V + 65) / 20);
+    var bh = 1.0 / (1 + Math.exp(-(V + 35) / 10));
+    var dv55 = V + 55;
+    var an = Math.abs(dv55) < 1e-7 ? 0.1 : 0.01 * dv55 / (1 - Math.exp(-dv55 / 10));
+    var bn = 0.125 * Math.exp(-(V + 65) / 80);
+    return { am: am, bm: bm, ah: ah, bh: bh, an: an, bn: bn };
+  }
+
+  function addBranchSegs(segs, x1, y1, angle, len, depth) {
+    if (depth === 0 || len < 4) return;
+    var x2 = x1 + Math.cos(angle) * len;
+    var y2 = y1 + Math.sin(angle) * len;
+    segs.push({ x1: x1, y1: y1, x2: x2, y2: y2 });
+    var nBr = depth >= 3 ? 3 : 2;
+    for (var bi = 0; bi < nBr; bi++) {
+      addBranchSegs(segs, x2, y2, angle + (Math.random() - 0.5) * 1.1, len * 0.58, depth - 1);
+    }
+  }
+
+  function buildMorphology(cx, cy) {
+    var segs = [];
+    addBranchSegs(segs, cx, cy, -Math.PI / 2, 36 + Math.random() * 16, 3);
+    var bAngles = [-2.2, -1.05, 1.05, 2.2];
+    for (var bi = 0; bi < 4; bi++) {
+      addBranchSegs(segs, cx, cy, bAngles[bi] + (Math.random() - 0.5) * 0.4, 20 + Math.random() * 10, 2);
+    }
+    return segs;
+  }
+
+  // ── CONNECTOME NEURON NETWORK (left side) ────────────────────────────────
+  var NN = {
+    neurons: [], particles: [],
+    leftW: 0,
+    traceBuf: null, tracePos: 0, traceW: 0, traceTX: 0, traceTY: 0,
+
+    init: function () {
+      this.neurons = []; this.particles = [];
+      var CONTENT_W = Math.min(740, W), CX = (W - CONTENT_W) / 2;
+      this.leftW = CX - 44;
+      if (this.leftW < 80) { this.traceBuf = null; return; }
+      var lx = 0, lw = this.leftW, count = 6;
+      var startY = H * 0.12, spanY = H * 0.76;
+
+      for (var i = 0; i < count; i++) {
+        var cx = lx + lw * 0.42 + (Math.random() - 0.5) * lw * 0.28;
+        var cy = startY + (i / (count - 1)) * spanY;
+        this.neurons.push({
+          x: cx, y: cy, somaR: 4 + Math.random() * 2,
+          segs: buildMorphology(cx, cy), axons: [],
+          V: -65 + (Math.random() - 0.5) * 4,
+          m: 0.0529, h: 0.5961, n: 0.3177,
+          np: 0.047, ns: 0.216, nu: 0.018, nr: 0.14,
+          I_syn: 0, I_ext: 0,
+          spikeTimer: Math.floor(100 + i * 30 + Math.random() * 150),
+          extDur: 0, prevV: -65
+        });
+      }
+
+      for (var a = 0; a < count; a++) {
+        for (var b = a + 1; b < count; b++) {
+          var dx = this.neurons[a].x - this.neurons[b].x;
+          var dy = this.neurons[a].y - this.neurons[b].y;
+          if (Math.sqrt(dx * dx + dy * dy) < H * 0.22 + 60) {
+            var na = this.neurons[a], nb = this.neurons[b];
+            var jx = (Math.random() - 0.5) * 24, jy = (Math.random() - 0.5) * 24;
+            var midX = (na.x + nb.x) / 2 + jx, midY = (na.y + nb.y) / 2 + jy;
+            na.axons.push({
+              sx: na.x, sy: na.y,
+              cp1x: na.x + (midX - na.x) * 0.5, cp1y: na.y + (midY - na.y) * 0.5,
+              cp2x: midX + (nb.x - midX) * 0.5,  cp2y: midY + (nb.y - midY) * 0.5,
+              ex: nb.x, ey: nb.y, targetIdx: b
+            });
+          }
+        }
+      }
+
+      this.traceW = Math.min(lw - 16, 180);
+      this.traceTX = lx + (lw - this.traceW) / 2;
+      this.traceTY = H - 68;
+      this.traceBuf = new Float32Array(this.traceW).fill(-65);
+      this.tracePos = 0;
+    },
+
+    update: function () {
+      if (this.leftW < 80) return;
+      var self = this, dt = 0.05, Cm = 1;
+      var gNa = 56, gK = 6, gL = 0.0205, ENa = 50, EK = -90, EL = -70.3;
+
+      this.neurons.forEach(function (nd) {
+        if (--nd.spikeTimer <= 0) {
+          nd.spikeTimer = Math.floor(100 + Math.random() * 220);
+          nd.I_ext = 1.0; nd.extDur = 60;
+        }
+        if (nd.extDur > 0) { nd.extDur--; } else { nd.I_ext = 0; }
+
+        for (var s = 0; s < 10; s++) {
+          var rates = hhRates(nd.V);
+          var INa = gNa * nd.m * nd.m * nd.m * nd.h * (nd.V - ENa);
+          var IK  = gK  * nd.n * nd.n * nd.n * nd.n * (nd.V - EK);
+          var IL  = gL  * (nd.V - EL);
+          var IM = 0, IT = 0, Ih = 0;
+
+          if (channels.M) {
+            var p_inf = 1 / (1 + Math.exp(-(nd.V + 35) / 10));
+            var tau_p = 608 / (3.3 * Math.exp((nd.V + 35) / 20) + Math.exp(-(nd.V + 35) / 20));
+            nd.np += (p_inf - nd.np) / tau_p * dt;
+            IM = 0.075 * nd.np * (nd.V - EK);
+          }
+          if (channels.T) {
+            var s_inf = 1 / (1 + Math.exp(-(nd.V + 57) / 6.2));
+            var tau_s = Math.max(0.1, 0.612 + 1 / (Math.exp(-(nd.V + 132) / 16.7) + Math.exp((nd.V + 16.8) / 18.2)));
+            var u_inf = 1 / (1 + Math.exp((nd.V + 81) / 4));
+            var tau_u = nd.V < -80 ? Math.exp((nd.V + 467) / 66.6) : 28 + Math.exp(-(nd.V + 22) / 10.5);
+            nd.ns += (s_inf - nd.ns) / tau_s * dt;
+            nd.nu += (u_inf - nd.nu) / tau_u * dt;
+            IT = 0.4 * nd.ns * nd.ns * nd.nu * (nd.V - 120);
+          }
+          if (channels.H) {
+            var r_inf = 1 / (1 + Math.exp((nd.V + 75) / 5.5));
+            var tau_r = Math.max(10, 1 / (Math.exp(-14.59 - 0.086 * nd.V) + Math.exp(-1.87 + 0.0701 * nd.V)));
+            nd.nr += (r_inf - nd.nr) / tau_r * dt;
+            Ih = 0.0175 * nd.nr * (nd.V + 43);
+          }
+
+          nd.V += ((nd.I_ext + nd.I_syn - INa - IK - IL - IM - IT - Ih) / Cm) * dt;
+          nd.m += (rates.am * (1 - nd.m) - rates.bm * nd.m) * dt;
+          nd.h += (rates.ah * (1 - nd.h) - rates.bh * nd.h) * dt;
+          nd.n += (rates.an * (1 - nd.n) - rates.bn * nd.n) * dt;
+          nd.I_syn *= 0.88;
+        }
+
+        if (nd.prevV < 10 && nd.V >= 10) {
+          nd.axons.forEach(function (ax) {
+            self.particles.push({ ax: ax, t: 0, spd: 0.006 + Math.random() * 0.004 });
+          });
+        }
+        nd.prevV = nd.V;
+      });
+
+      if (this.neurons.length > 0 && this.traceBuf) {
+        this.traceBuf[this.tracePos] = this.neurons[0].V;
+        this.tracePos = (this.tracePos + 1) % this.traceW;
+      }
+
+      var alive = [];
+      this.particles.forEach(function (p) {
+        p.t += p.spd;
+        if (p.t < 1) { alive.push(p); }
+        else {
+          var ti = p.ax.targetIdx;
+          if (ti >= 0 && ti < self.neurons.length) self.neurons[ti].I_syn += 1.8;
+        }
+      });
+      this.particles = alive;
+    },
+
+    draw: function () {
+      if (this.leftW < 80) return;
+      var C = '80,180,160';
+      ctx.save();
+      ctx.globalAlpha = 0.14;
+
+      this.neurons.forEach(function (nd) {
+        ctx.strokeStyle = 'rgba(' + C + ',0.6)';
+        ctx.lineWidth = 0.7;
+        nd.segs.forEach(function (seg) {
+          ctx.beginPath(); ctx.moveTo(seg.x1, seg.y1); ctx.lineTo(seg.x2, seg.y2); ctx.stroke();
+        });
+
+        nd.axons.forEach(function (ax) {
+          ctx.strokeStyle = 'rgba(' + C + ',0.35)';
+          ctx.lineWidth = 0.6;
+          ctx.beginPath();
+          ctx.moveTo(ax.sx, ax.sy);
+          ctx.bezierCurveTo(ax.cp1x, ax.cp1y, ax.cp2x, ax.cp2y, ax.ex, ax.ey);
+          ctx.stroke();
+          ctx.fillStyle = 'rgba(' + C + ',0.5)';
+          ctx.beginPath(); ctx.arc(ax.ex, ax.ey, 2, 0, Math.PI * 2); ctx.fill();
+        });
+
+        var firing = nd.V > 0;
+        if (firing) {
+          ctx.globalAlpha = 0.55;
+          var g = ctx.createRadialGradient(nd.x, nd.y, 0, nd.x, nd.y, 16);
+          g.addColorStop(0, 'rgba(' + C + ',0.8)');
+          g.addColorStop(1, 'rgba(' + C + ',0)');
+          ctx.fillStyle = g;
+          ctx.beginPath(); ctx.arc(nd.x, nd.y, 16, 0, Math.PI * 2); ctx.fill();
+          ctx.globalAlpha = 0.14;
+        }
+        var norm = Math.max(0, Math.min(1, (nd.V + 65) / 80));
+        ctx.fillStyle = 'rgba(' + C + ',' + (firing ? 0.95 : (0.25 + norm * 0.55)) + ')';
+        ctx.beginPath(); ctx.arc(nd.x, nd.y, nd.somaR, 0, Math.PI * 2); ctx.fill();
+      });
+
+      ctx.globalAlpha = 0.7;
+      this.particles.forEach(function (p) {
+        var ax = p.ax, t = p.t, mt = 1 - t;
+        var px = mt*mt*mt*ax.sx + 3*mt*mt*t*ax.cp1x + 3*mt*t*t*ax.cp2x + t*t*t*ax.ex;
+        var py = mt*mt*mt*ax.sy + 3*mt*mt*t*ax.cp1y + 3*mt*t*t*ax.cp2y + t*t*t*ax.ey;
+        ctx.fillStyle = 'rgba(' + C + ',0.9)';
+        ctx.beginPath(); ctx.arc(px, py, 2.5, 0, Math.PI * 2); ctx.fill();
+      });
+
+      if (this.traceBuf && this.traceW > 0) {
+        ctx.globalAlpha = 0.5;
+        var tx = this.traceTX, ty = this.traceTY, tw = this.traceW, th = 36;
+        var VMIN = -80, VMAX = 52;
+        var restY = ty + th * (1 - (-65 - VMIN) / (VMAX - VMIN));
+        ctx.strokeStyle = 'rgba(' + C + ',0.22)';
+        ctx.lineWidth = 0.5;
+        ctx.setLineDash([2, 4]);
+        ctx.beginPath(); ctx.moveTo(tx, restY); ctx.lineTo(tx + tw, restY); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.strokeStyle = 'rgba(' + C + ',0.85)';
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        for (var i = 0; i < tw; i++) {
+          var vy = ty + th * (1 - (this.traceBuf[(this.tracePos + i) % tw] - VMIN) / (VMAX - VMIN));
+          if (i === 0) ctx.moveTo(tx, vy); else ctx.lineTo(tx + i, vy);
+        }
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+  };
+
+  // ── STIGMERGIC SWARM (right side) ──────────────────────────────────────────
+  var SWARM = {
+    agents: [], markers: [], nextTask: 40, rx: 0, rw: 0,
+    ROLE_COLORS: ['176,128,48', '100,160,220', '190,90,140', '80,190,110'],
+    ROLE_LABELS: ['RES', 'COD', 'RSN', 'MEM'],
+    TASK_LABELS: ['search', 'analyze', 'codegen', 'retrieve', 'synthesize'],
+
+    init: function () {
+      this.agents = []; this.markers = []; this.nextTask = 40;
+      var CONTENT_W = Math.min(740, W), CX = (W - CONTENT_W) / 2;
+      this.rx = CX + CONTENT_W + 44;
+      this.rw = W - this.rx;
+      if (this.rw < 80) return;
+      for (var i = 0; i < 8; i++) {
+        this.agents.push({
+          x: this.rx + 8 + Math.random() * (this.rw - 16),
+          y: H * 0.1 + Math.random() * H * 0.8,
+          vx: (Math.random() - 0.5) * 0.6, vy: (Math.random() - 0.5) * 0.6,
+          role: i % 4, state: 'wander', target: null, workTimer: 0, trail: []
+        });
+      }
+    },
+
+    update: function () {
+      if (this.rw < 80) return;
+      var self = this;
+
+      if (--this.nextTask <= 0) {
+        this.nextTask = Math.floor(50 + Math.random() * 70);
+        this.markers.push({
+          x: this.rx + 8 + Math.random() * (this.rw - 16),
+          y: H * 0.1 + Math.random() * H * 0.8,
+          type: 'task',
+          label: this.TASK_LABELS[Math.floor(Math.random() * this.TASK_LABELS.length)],
+          strength: 1.0
+        });
+      }
+
+      this.markers = this.markers.filter(function (mk) {
+        mk.strength -= 0.0014; return mk.strength >= 0.05;
+      });
+
+      this.agents.forEach(function (ag) {
+        if (ag.state === 'wander') {
+          ag.vx += (Math.random() - 0.5) * 0.12;
+          ag.vy += (Math.random() - 0.5) * 0.12;
+          ag.vx += (self.rx + self.rw / 2 - ag.x) * 0.0003;
+          ag.vy += (H / 2 - ag.y) * 0.0003;
+          var spd = Math.sqrt(ag.vx * ag.vx + ag.vy * ag.vy);
+          if (spd > 0.9) { ag.vx *= 0.9 / spd; ag.vy *= 0.9 / spd; }
+          var bestMk = null, bestStr = 0;
+          self.markers.forEach(function (mk) {
+            if (mk.type !== 'task') return;
+            var dx = mk.x - ag.x, dy = mk.y - ag.y;
+            if (dx*dx + dy*dy < 10000 && mk.strength > bestStr) { bestStr = mk.strength; bestMk = mk; }
+          });
+          if (bestMk) { ag.state = 'seek'; ag.target = bestMk; }
+
+        } else if (ag.state === 'seek') {
+          if (!ag.target || ag.target.strength < 0.05) { ag.state = 'wander'; ag.target = null; }
+          else {
+            var dx = ag.target.x - ag.x, dy = ag.target.y - ag.y;
+            var d = Math.sqrt(dx * dx + dy * dy);
+            if (d < 8) { ag.state = 'work'; ag.workTimer = 90 + Math.floor(Math.random() * 60); }
+            else {
+              ag.vx += dx / d * 0.18; ag.vy += dy / d * 0.18;
+              var spd2 = Math.sqrt(ag.vx * ag.vx + ag.vy * ag.vy);
+              if (spd2 > 1.2) { ag.vx *= 1.2 / spd2; ag.vy *= 1.2 / spd2; }
+            }
+          }
+
+        } else if (ag.state === 'work') {
+          if (!ag.target || ag.target.strength < 0.05) { ag.state = 'wander'; ag.target = null; }
+          else if (--ag.workTimer <= 0) {
+            self.markers.push({
+              x: ag.target.x + (Math.random() - 0.5) * 12,
+              y: ag.target.y + (Math.random() - 0.5) * 12,
+              type: 'result', label: 'done', strength: 0.8
+            });
+            ag.target.strength = 0;
+            ag.state = 'wander'; ag.target = null;
+          }
+        }
+
+        ag.x += ag.vx; ag.y += ag.vy;
+        if (ag.x < self.rx + 4)           { ag.x = self.rx + 4;           ag.vx =  Math.abs(ag.vx); }
+        if (ag.x > self.rx + self.rw - 4) { ag.x = self.rx + self.rw - 4; ag.vx = -Math.abs(ag.vx); }
+        if (ag.y < 4)    { ag.y = 4;    ag.vy =  Math.abs(ag.vy); }
+        if (ag.y > H - 4){ ag.y = H - 4; ag.vy = -Math.abs(ag.vy); }
+        ag.trail.push({ x: ag.x, y: ag.y });
+        if (ag.trail.length > 5) ag.trail.shift();
+      });
+    },
+
+    draw: function () {
+      if (this.rw < 80) return;
+      var self = this;
+      ctx.save();
+
+      this.markers.forEach(function (mk) {
+        var C = mk.type === 'task' ? '176,128,48' : '100,176,80';
+        var r = 4 + mk.strength * 8;
+        ctx.globalAlpha = mk.strength * 0.35;
+        ctx.fillStyle = 'rgba(' + C + ',1)';
+        ctx.beginPath(); ctx.arc(mk.x, mk.y, r, 0, Math.PI * 2); ctx.fill();
+        if (mk.type === 'task' && mk.strength > 0.2) {
+          ctx.globalAlpha = mk.strength * 0.55;
+          ctx.fillStyle = 'rgba(' + C + ',0.9)';
+          ctx.font = '6px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(mk.label, mk.x, mk.y - r - 2);
+          ctx.textAlign = 'left';
+        }
+      });
+
+      this.agents.forEach(function (ag) {
+        var C = self.ROLE_COLORS[ag.role];
+        var working = ag.state === 'work';
+
+        if (ag.state !== 'wander' && ag.trail.length > 1) {
+          ctx.globalAlpha = 0.2;
+          ctx.strokeStyle = 'rgba(' + C + ',1)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ag.trail.forEach(function (pt, ti) { if (ti === 0) ctx.moveTo(pt.x, pt.y); else ctx.lineTo(pt.x, pt.y); });
+          ctx.stroke();
+        }
+
+        if (ag.state === 'seek' && ag.target) {
+          ctx.globalAlpha = 0.22;
+          ctx.strokeStyle = 'rgba(' + C + ',1)';
+          ctx.lineWidth = 0.7;
+          ctx.setLineDash([3, 4]);
+          ctx.beginPath(); ctx.moveTo(ag.x, ag.y); ctx.lineTo(ag.target.x, ag.target.y); ctx.stroke();
+          ctx.setLineDash([]);
+        }
+
+        if (working) {
+          ctx.globalAlpha = 0.28;
+          var g2 = ctx.createRadialGradient(ag.x, ag.y, 0, ag.x, ag.y, 10);
+          g2.addColorStop(0, 'rgba(' + C + ',0.8)'); g2.addColorStop(1, 'rgba(' + C + ',0)');
+          ctx.fillStyle = g2;
+          ctx.beginPath(); ctx.arc(ag.x, ag.y, 10, 0, Math.PI * 2); ctx.fill();
+        }
+
+        ctx.globalAlpha = working ? 0.85 : 0.45;
+        ctx.fillStyle = 'rgba(' + C + ',1)';
+        ctx.beginPath(); ctx.arc(ag.x, ag.y, 3.5, 0, Math.PI * 2); ctx.fill();
+
+        ctx.globalAlpha = working ? 0.75 : 0.3;
+        ctx.fillStyle = 'rgba(' + C + ',1)';
+        ctx.font = '5px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(self.ROLE_LABELS[ag.role], ag.x, ag.y - 5.5);
+        ctx.textAlign = 'left';
+      });
+
+      ctx.restore();
+    }
+  };
+
   function resize() {
     W = canvas.width  = window.innerWidth;
     H = canvas.height = window.innerHeight;
     NN.init();
-    HPC.init();
+    SWARM.init();
   }
 
-  // ── NEURAL NETWORK ───────────────────────────────────────────────────────
-  // Upper-left region, muted blue-gray
-  var NN = {
-    nodes: [],
-    edges: [],
-    sigs: [],
-
-    init: function () {
-      var i, a, b, dx, dy, d, maxD;
-      this.nodes = [];
-      this.edges = [];
-      this.sigs  = [];
-
-      var count = 14;
-      var rw = W * 0.44, rh = H * 0.52;
-
-      for (i = 0; i < count; i++) {
-        this.nodes.push({
-          x:  Math.random() * rw,
-          y:  Math.random() * rh,
-          charge:     Math.random() * 0.3,
-          firing:     false,
-          fireTimer:  0,
-          threshold:  0.68 + Math.random() * 0.22,
-          decay:      0.0022 + Math.random() * 0.002,
-          checkInt:   160 + Math.random() * 300,
-          checkT:     Math.random() * 300,
-        });
-      }
-
-      maxD = Math.max(W, H) * 0.21;
-      for (a = 0; a < count; a++) {
-        for (b = a + 1; b < count; b++) {
-          dx = this.nodes[a].x - this.nodes[b].x;
-          dy = this.nodes[a].y - this.nodes[b].y;
-          d  = Math.sqrt(dx * dx + dy * dy);
-          if (d < maxD && Math.random() < 0.42) {
-            this.edges.push({ from: a, to: b });
-          }
-        }
-      }
-    },
-
-    fire: function (idx) {
-      var n = this.nodes[idx];
-      if (n.firing) return;
-      n.firing = true;
-      n.fireTimer = 34;
-      n.charge = 0;
-      var self = this;
-      this.edges.forEach(function (e) {
-        var target = -1;
-        if (e.from === idx) target = e.to;
-        else if (e.to === idx) target = e.from;
-        if (target < 0) return;
-        var fn = self.nodes[idx];
-        var tn = self.nodes[target];
-        self.sigs.push({
-          x0: fn.x, y0: fn.y,
-          x1: tn.x, y1: tn.y,
-          dest: target,
-          t: 0,
-          spd: 0.007 + Math.random() * 0.006,
-        });
-      });
-    },
-
-    update: function () {
-      var self = this;
-      this.nodes.forEach(function (n, i) {
-        if (n.firing) {
-          if (--n.fireTimer <= 0) { n.firing = false; n.charge = 0; }
-        } else {
-          n.charge = Math.min(1, n.charge + n.decay);
-          if (++n.checkT > n.checkInt) {
-            n.checkT = 0;
-            if (Math.random() < 0.22) self.fire(i);
-          }
-        }
-      });
-      this.sigs = this.sigs.filter(function (s) {
-        s.t += s.spd;
-        if (s.t >= 1) {
-          var tn = self.nodes[s.dest];
-          tn.charge = Math.min(1, tn.charge + 0.33);
-          if (!tn.firing && tn.charge >= tn.threshold) self.fire(s.dest);
-          return false;
-        }
-        return true;
-      });
-    },
-
-    draw: function () {
-      var C = '112,144,176';
-      ctx.save();
-      ctx.globalAlpha = 0.13;
-
-      // Axons
-      this.edges.forEach(function (e) {
-        var a = NN.nodes[e.from], b = NN.nodes[e.to];
-        ctx.strokeStyle = 'rgba(' + C + ',0.5)';
-        ctx.lineWidth = 0.8;
-        ctx.beginPath();
-        ctx.moveTo(a.x, a.y);
-        ctx.lineTo(b.x, b.y);
-        ctx.stroke();
-      });
-
-      // Traveling signals
-      this.sigs.forEach(function (s) {
-        var x = s.x0 + (s.x1 - s.x0) * s.t;
-        var y = s.y0 + (s.y1 - s.y0) * s.t;
-        ctx.fillStyle = 'rgba(' + C + ',1)';
-        ctx.beginPath();
-        ctx.arc(x, y, 2.8, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      // Nodes
-      this.nodes.forEach(function (n) {
-        if (n.firing) {
-          var g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 20);
-          g.addColorStop(0, 'rgba(' + C + ',0.7)');
-          g.addColorStop(1, 'rgba(' + C + ',0)');
-          ctx.fillStyle = g;
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, 20, 0, Math.PI * 2);
-          ctx.fill();
-        }
-        var r = n.firing ? 6.5 : 3.5 + n.charge * 1.8;
-        var al = n.firing ? 1 : 0.22 + n.charge * 0.58;
-        ctx.fillStyle = 'rgba(' + C + ',' + al + ')';
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      ctx.restore();
-    }
-  };
-
-  // ── HPC CLUSTER ──────────────────────────────────────────────────────────
-  // Lower-right region, muted amber
-  var HPC = {
-    nodes: [],
-    wires: [],
-    pkts:  [],
-
-    init: function () {
-      var i, j, dc, dr;
-      this.nodes = [];
-      this.wires = [];
-      this.pkts  = [];
-
-      var NW = 52, NH = 30, GX = 80, GY = 56;
-      var cols = 3, rows = 3;
-      var totalW = (cols - 1) * GX + NW;
-      var totalH = (rows - 1) * GY + NH;
-      var ox = Math.max(W * 0.52, W - totalW - 44);
-      var oy = Math.max(H * 0.48, H - totalH - 64);
-
-      // 8 positions, skip (1,1) center for visual variety
-      var placed = 0;
-      outer:
-      for (var r = 0; r < rows; r++) {
-        for (var c = 0; c < cols; c++) {
-          if (r === 1 && c === 1) continue;
-          this.nodes.push({
-            x: ox + c * GX, y: oy + r * GY,
-            w: NW, h: NH,
-            col: c, row: r,
-            act: 0, actT: 0,
-            sendT: 40 + Math.random() * 130,
-          });
-          if (++placed >= 8) break outer;
-        }
-      }
-
-      var nn = this.nodes;
-      for (i = 0; i < nn.length; i++) {
-        for (j = i + 1; j < nn.length; j++) {
-          dc = Math.abs(nn[i].col - nn[j].col);
-          dr = Math.abs(nn[i].row - nn[j].row);
-          if (dc + dr <= 1) {
-            this.wires.push({ from: i, to: j });
-          } else if (dc === 1 && dr === 1 && Math.random() < 0.38) {
-            this.wires.push({ from: i, to: j });
-          }
-        }
-      }
-    },
-
-    send: function (fromIdx) {
-      var nn = this.nodes, wires = this.wires;
-      var targets = [];
-      wires.forEach(function (w) {
-        if (w.from === fromIdx) targets.push(w.to);
-        else if (w.to === fromIdx) targets.push(w.from);
-      });
-      if (!targets.length) return;
-      var toIdx = targets[Math.floor(Math.random() * targets.length)];
-      var f = nn[fromIdx], t = nn[toIdx];
-      this.pkts.push({
-        x0: f.x + f.w / 2, y0: f.y + f.h / 2,
-        x1: t.x + t.w / 2, y1: t.y + t.h / 2,
-        dest: toIdx, t: 0,
-        spd: 0.011 + Math.random() * 0.009,
-      });
-      f.act = 1; f.actT = 28;
-    },
-
-    update: function () {
-      var self = this;
-      var nn = this.nodes;
-      nn.forEach(function (n, i) {
-        if (n.actT > 0) { n.actT--; n.act = n.actT / 28; }
-        if (--n.sendT <= 0) {
-          n.sendT = 55 + Math.random() * 160;
-          self.send(i);
-        }
-      });
-      this.pkts = this.pkts.filter(function (p) {
-        p.t += p.spd;
-        if (p.t >= 1) {
-          var tn = nn[p.dest];
-          tn.act = 1; tn.actT = 28;
-          return false;
-        }
-        return true;
-      });
-    },
-
-    draw: function () {
-      var C = '176,128,48';
-      ctx.save();
-      ctx.globalAlpha = 0.12;
-
-      // Wires
-      this.wires.forEach(function (w) {
-        var a = HPC.nodes[w.from], b = HPC.nodes[w.to];
-        ctx.strokeStyle = 'rgba(' + C + ',0.45)';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(a.x + a.w / 2, a.y + a.h / 2);
-        ctx.lineTo(b.x + b.w / 2, b.y + b.h / 2);
-        ctx.stroke();
-      });
-
-      // Packets (small bright squares)
-      this.pkts.forEach(function (p) {
-        var x = p.x0 + (p.x1 - p.x0) * p.t;
-        var y = p.y0 + (p.y1 - p.y0) * p.t;
-        ctx.fillStyle = 'rgba(' + C + ',1)';
-        ctx.fillRect(x - 3.5, y - 3.5, 7, 7);
-      });
-
-      // Compute node rectangles
-      this.nodes.forEach(function (n) {
-        var a = 0.18 + n.act * 0.65;
-
-        if (n.act > 0.15) {
-          ctx.shadowColor = 'rgba(' + C + ',0.55)';
-          ctx.shadowBlur  = 14;
-        }
-
-        ctx.strokeStyle = 'rgba(' + C + ',' + a + ')';
-        ctx.lineWidth   = 1.5;
-        ctx.strokeRect(n.x, n.y, n.w, n.h);
-        ctx.fillStyle   = 'rgba(' + C + ',' + (a * 0.32) + ')';
-        ctx.fillRect(n.x, n.y, n.w, n.h);
-        ctx.shadowBlur  = 0;
-
-        // Status LEDs
-        for (var d = 0; d < 3; d++) {
-          var lx = n.x + 8 + d * 13;
-          var ly = n.y + n.h / 2;
-          ctx.fillStyle = 'rgba(' + C + ',' + (n.act > 0.5 ? 0.9 : 0.22) + ')';
-          ctx.beginPath();
-          ctx.arc(lx, ly, 1.5, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      });
-
-      ctx.restore();
-    }
-  };
-
-  // ── Animation loop ───────────────────────────────────────────────────────
   function loop() {
     if (paused) return;
     ctx.clearRect(0, 0, W, H);
-    NN.update();  NN.draw();
-    HPC.update(); HPC.draw();
+    NN.update();    NN.draw();
+    SWARM.update(); SWARM.draw();
     raf = requestAnimationFrame(loop);
   }
 
@@ -827,6 +1051,349 @@ document.getElementById('yr').textContent = new Date().getFullYear();
   window.addEventListener('resize', resize);
   resize();
   raf = requestAnimationFrame(loop);
+})();
+</script>
+
+<script>
+// ── Hodgkin-Huxley Widget ────────────────────────────────────────────────────
+(function () {
+  var canvas = document.getElementById('hh-widget-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var CW = 540, CH = 200;
+  var raf = null, paused = true;
+
+  var V = -65, m = 0.0529, h = 0.5961, n = 0.3177;
+  var wp = 0.047, ws = 0.216, wu = 0.018, wr = 0.14;
+  var injectSteps = 0;
+  var VMIN = -80, VMAX = 52;
+
+  var BUF = CW;
+  var vBuf = new Float32Array(BUF).fill(V);
+  var writePos = 0;
+
+  function hhW(Vv) {
+    var dv40 = Vv + 40;
+    var am = Math.abs(dv40) < 1e-7 ? 1.0 : 0.1 * dv40 / (1 - Math.exp(-dv40 / 10));
+    var bm = 4.0 * Math.exp(-(Vv + 65) / 18);
+    var ah = 0.07 * Math.exp(-(Vv + 65) / 20);
+    var bh = 1.0 / (1 + Math.exp(-(Vv + 35) / 10));
+    var dv55 = Vv + 55;
+    var an = Math.abs(dv55) < 1e-7 ? 0.1 : 0.01 * dv55 / (1 - Math.exp(-dv55 / 10));
+    var bn = 0.125 * Math.exp(-(Vv + 65) / 80);
+    return { am: am, bm: bm, ah: ah, bh: bh, an: an, bn: bn };
+  }
+
+  function vtY(v) {
+    return CH - (v - VMIN) / (VMAX - VMIN) * CH;
+  }
+
+  function tick() {
+    var dt = 0.05;
+    var Cm = 1, gNa = 120, gK = 36, gL = 0.3;
+    var ENa = 50, EK = -77, EL = -54.387;
+
+    for (var s = 0; s < 10; s++) {
+      var Iext = injectSteps > 0 ? 15 : 0;
+      if (injectSteps > 0) injectSteps--;
+      var r = hhW(V);
+      var INa = gNa * m * m * m * h * (V - ENa);
+      var IK  = gK  * n * n * n * n * (V - EK);
+      var IL  = gL  * (V - EL);
+      var IM = 0, IT = 0, Ih = 0;
+
+      if (channels.M) {
+        var p_inf = 1 / (1 + Math.exp(-(V + 35) / 10));
+        var tau_p = 608 / (3.3 * Math.exp((V + 35) / 20) + Math.exp(-(V + 35) / 20));
+        wp += (p_inf - wp) / tau_p * dt;
+        IM = 0.075 * wp * (V - EK);
+      }
+      if (channels.T) {
+        var s_inf = 1 / (1 + Math.exp(-(V + 57) / 6.2));
+        var tau_s = Math.max(0.1, 0.612 + 1 / (Math.exp(-(V + 132) / 16.7) + Math.exp((V + 16.8) / 18.2)));
+        var u_inf = 1 / (1 + Math.exp((V + 81) / 4));
+        var tau_u = V < -80 ? Math.exp((V + 467) / 66.6) : 28 + Math.exp(-(V + 22) / 10.5);
+        ws += (s_inf - ws) / tau_s * dt;
+        wu += (u_inf - wu) / tau_u * dt;
+        IT = 0.4 * ws * ws * wu * (V - 120);
+      }
+      if (channels.H) {
+        var r_inf = 1 / (1 + Math.exp((V + 75) / 5.5));
+        var tau_r = Math.max(10, 1 / (Math.exp(-14.59 - 0.086 * V) + Math.exp(-1.87 + 0.0701 * V)));
+        wr += (r_inf - wr) / tau_r * dt;
+        Ih = 0.0175 * wr * (V + 43);
+      }
+
+      V += ((Iext - INa - IK - IL - IM - IT - Ih) / Cm) * dt;
+      m += (r.am * (1 - m) - r.bm * m) * dt;
+      h += (r.ah * (1 - h) - r.bh * h) * dt;
+      n += (r.an * (1 - n) - r.bn * n) * dt;
+    }
+
+    vBuf[writePos] = V;
+    writePos = (writePos + 1) % BUF;
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, CW, CH);
+    ctx.fillStyle = '#0c0a09';
+    ctx.fillRect(0, 0, CW, CH);
+
+    ctx.setLineDash([2, 5]);
+    ctx.lineWidth = 0.5;
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+    ctx.beginPath(); ctx.moveTo(0, vtY(-65)); ctx.lineTo(CW, vtY(-65)); ctx.stroke();
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+    ctx.beginPath(); ctx.moveTo(0, vtY(0)); ctx.lineTo(CW, vtY(0)); ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = 'rgba(255,255,255,0.25)';
+    ctx.font = '9px monospace';
+    ctx.fillText('0 mV', 4, vtY(0) - 3);
+    ctx.fillText('−65 mV', 4, vtY(-65) - 3);
+
+    ctx.strokeStyle = 'rgba(100,180,255,0.9)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    for (var i = 0; i < BUF; i++) {
+      var idx = (writePos + i) % BUF;
+      var y = vtY(vBuf[idx]);
+      if (i === 0) ctx.moveTo(0, y); else ctx.lineTo(i, y);
+    }
+    ctx.stroke();
+
+    ctx.fillStyle = 'rgba(100,180,255,0.5)';
+    ctx.font = '9px monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText('Vm', CW - 4, 12);
+    ctx.textAlign = 'left';
+  }
+
+  function loop() {
+    if (paused) return;
+    tick();
+    draw();
+    raf = requestAnimationFrame(loop);
+  }
+
+  var io = new IntersectionObserver(function (entries) {
+    var vis = entries[0].isIntersecting;
+    if (vis && paused) { paused = false; raf = requestAnimationFrame(loop); }
+    else if (!vis) { paused = true; if (raf) cancelAnimationFrame(raf); }
+  }, { threshold: 0.1 });
+  io.observe(canvas);
+
+  document.getElementById('hh-inject-btn').addEventListener('click', function () {
+    injectSteps = 20;
+  });
+})();
+</script>
+
+<script>
+// ── Stigmergic Swarm Widget ───────────────────────────────────────────────────
+(function () {
+  var canvas = document.getElementById('hpc-widget-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var CW = 540, CH = 260;
+  var raf = null, paused = true;
+
+  var ROLE_COLORS = ['176,128,48', '100,160,220', '190,90,140', '80,190,110'];
+  var ROLE_LABELS = ['RES', 'COD', 'RSN', 'MEM'];
+  var TASK_LABELS = ['search', 'analyze', 'codegen', 'retrieve', 'synthesize'];
+
+  var agents = [], markers = [], nextTask = 60;
+
+  function spawnAgents() {
+    agents = [];
+    for (var i = 0; i < 8; i++) {
+      agents.push({
+        x: 20 + Math.random() * (CW - 40),
+        y: 20 + Math.random() * (CH - 40),
+        vx: (Math.random() - 0.5) * 0.8, vy: (Math.random() - 0.5) * 0.8,
+        role: i % 4, state: 'wander', target: null, workTimer: 0, trail: []
+      });
+    }
+  }
+  spawnAgents();
+
+  function tick() {
+    if (--nextTask <= 0) {
+      nextTask = Math.floor(40 + Math.random() * 60);
+      markers.push({
+        x: 20 + Math.random() * (CW - 40),
+        y: 20 + Math.random() * (CH - 40),
+        type: 'task',
+        label: TASK_LABELS[Math.floor(Math.random() * TASK_LABELS.length)],
+        strength: 1.0
+      });
+    }
+
+    markers = markers.filter(function (mk) {
+      mk.strength -= 0.0018; return mk.strength >= 0.05;
+    });
+
+    agents.forEach(function (ag) {
+      if (ag.state === 'wander') {
+        ag.vx += (Math.random() - 0.5) * 0.15;
+        ag.vy += (Math.random() - 0.5) * 0.15;
+        ag.vx += (CW / 2 - ag.x) * 0.0005;
+        ag.vy += (CH / 2 - ag.y) * 0.0005;
+        var spd = Math.sqrt(ag.vx * ag.vx + ag.vy * ag.vy);
+        if (spd > 1.0) { ag.vx *= 1.0 / spd; ag.vy *= 1.0 / spd; }
+        var bestMk = null, bestStr = 0;
+        markers.forEach(function (mk) {
+          if (mk.type !== 'task') return;
+          var dx = mk.x - ag.x, dy = mk.y - ag.y;
+          if (dx*dx + dy*dy < 12000 && mk.strength > bestStr) { bestStr = mk.strength; bestMk = mk; }
+        });
+        if (bestMk) { ag.state = 'seek'; ag.target = bestMk; }
+
+      } else if (ag.state === 'seek') {
+        if (!ag.target || ag.target.strength < 0.05) { ag.state = 'wander'; ag.target = null; }
+        else {
+          var dx = ag.target.x - ag.x, dy = ag.target.y - ag.y;
+          var d = Math.sqrt(dx * dx + dy * dy);
+          if (d < 8) { ag.state = 'work'; ag.workTimer = 80 + Math.floor(Math.random() * 60); }
+          else {
+            ag.vx += dx / d * 0.2; ag.vy += dy / d * 0.2;
+            var spd2 = Math.sqrt(ag.vx * ag.vx + ag.vy * ag.vy);
+            if (spd2 > 1.4) { ag.vx *= 1.4 / spd2; ag.vy *= 1.4 / spd2; }
+          }
+        }
+      } else if (ag.state === 'work') {
+        if (!ag.target || ag.target.strength < 0.05) { ag.state = 'wander'; ag.target = null; }
+        else if (--ag.workTimer <= 0) {
+          markers.push({
+            x: ag.target.x + (Math.random() - 0.5) * 10,
+            y: ag.target.y + (Math.random() - 0.5) * 10,
+            type: 'result', label: 'done', strength: 0.9
+          });
+          ag.target.strength = 0;
+          ag.state = 'wander'; ag.target = null;
+        }
+      }
+
+      ag.x += ag.vx; ag.y += ag.vy;
+      if (ag.x < 4)      { ag.x = 4;      ag.vx =  Math.abs(ag.vx); }
+      if (ag.x > CW - 4) { ag.x = CW - 4; ag.vx = -Math.abs(ag.vx); }
+      if (ag.y < 4)      { ag.y = 4;      ag.vy =  Math.abs(ag.vy); }
+      if (ag.y > CH - 4) { ag.y = CH - 4; ag.vy = -Math.abs(ag.vy); }
+      ag.trail.push({ x: ag.x, y: ag.y });
+      if (ag.trail.length > 6) ag.trail.shift();
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, CW, CH);
+    ctx.fillStyle = '#0c0a09';
+    ctx.fillRect(0, 0, CW, CH);
+
+    markers.forEach(function (mk) {
+      var C = mk.type === 'task' ? '176,128,48' : '100,176,80';
+      var r = 5 + mk.strength * 10;
+      ctx.globalAlpha = mk.strength * 0.4;
+      ctx.fillStyle = 'rgba(' + C + ',1)';
+      ctx.beginPath(); ctx.arc(mk.x, mk.y, r, 0, Math.PI * 2); ctx.fill();
+      if (mk.type === 'task' && mk.strength > 0.15) {
+        ctx.globalAlpha = mk.strength * 0.8;
+        ctx.fillStyle = 'rgba(' + C + ',1)';
+        ctx.font = '8px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(mk.label, mk.x, mk.y - r - 3);
+        ctx.textAlign = 'left';
+      }
+    });
+
+    agents.forEach(function (ag) {
+      var C = ROLE_COLORS[ag.role];
+      var working = ag.state === 'work';
+
+      if (ag.state !== 'wander' && ag.trail.length > 1) {
+        ctx.globalAlpha = 0.3;
+        ctx.strokeStyle = 'rgba(' + C + ',1)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ag.trail.forEach(function (pt, ti) { if (ti === 0) ctx.moveTo(pt.x, pt.y); else ctx.lineTo(pt.x, pt.y); });
+        ctx.stroke();
+      }
+
+      if (ag.state === 'seek' && ag.target) {
+        ctx.globalAlpha = 0.28;
+        ctx.strokeStyle = 'rgba(' + C + ',1)';
+        ctx.lineWidth = 0.8;
+        ctx.setLineDash([3, 5]);
+        ctx.beginPath(); ctx.moveTo(ag.x, ag.y); ctx.lineTo(ag.target.x, ag.target.y); ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      if (working) {
+        ctx.globalAlpha = 0.35;
+        var g = ctx.createRadialGradient(ag.x, ag.y, 0, ag.x, ag.y, 12);
+        g.addColorStop(0, 'rgba(' + C + ',0.9)'); g.addColorStop(1, 'rgba(' + C + ',0)');
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(ag.x, ag.y, 12, 0, Math.PI * 2); ctx.fill();
+      }
+
+      ctx.globalAlpha = working ? 0.95 : 0.55;
+      ctx.fillStyle = 'rgba(' + C + ',1)';
+      ctx.beginPath(); ctx.arc(ag.x, ag.y, 4, 0, Math.PI * 2); ctx.fill();
+
+      ctx.globalAlpha = working ? 0.9 : 0.45;
+      ctx.fillStyle = 'rgba(' + C + ',1)';
+      ctx.font = 'bold 8px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(ROLE_LABELS[ag.role], ag.x, ag.y - 6);
+      ctx.textAlign = 'left';
+    });
+
+    var taskCount = markers.filter(function (mk) { return mk.type === 'task'; }).length;
+    var workCount = agents.filter(function (ag) { return ag.state === 'work'; }).length;
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = 'rgba(176,128,48,0.45)';
+    ctx.font = '9px monospace';
+    ctx.fillText('agents: ' + agents.length + '  |  tasks: ' + taskCount + '  |  working: ' + workCount, 8, 14);
+  }
+
+  function loop() {
+    if (paused) return;
+    tick(); draw();
+    raf = requestAnimationFrame(loop);
+  }
+
+  var io = new IntersectionObserver(function (entries) {
+    var vis = entries[0].isIntersecting;
+    if (vis && paused) { paused = false; raf = requestAnimationFrame(loop); }
+    else if (!vis) { paused = true; if (raf) cancelAnimationFrame(raf); }
+  }, { threshold: 0.1 });
+  io.observe(canvas);
+
+  document.getElementById('hpc-submit-btn').addEventListener('click', function () {
+    markers.push({
+      x: 20 + Math.random() * (CW - 40),
+      y: 20 + Math.random() * (CH - 40),
+      type: 'task',
+      label: TASK_LABELS[Math.floor(Math.random() * TASK_LABELS.length)],
+      strength: 1.0
+    });
+  });
+})();
+</script>
+
+<div id="channel-panel">
+  <div class="cp-label">Ion Channels</div>
+  <label><input type="checkbox" id="ch-m" checked> I<sub>M</sub> slow K&#8314;</label>
+  <label><input type="checkbox" id="ch-t"> I<sub>T</sub> T-Ca&#178;</label>
+  <label><input type="checkbox" id="ch-h"> I<sub>h</sub> HCN</label>
+</div>
+
+<script>
+(function () {
+  document.getElementById('ch-m').addEventListener('change', function () { channels.M = this.checked; });
+  document.getElementById('ch-t').addEventListener('change', function () { channels.T = this.checked; });
+  document.getElementById('ch-h').addEventListener('change', function () { channels.H = this.checked; });
 })();
 </script>
 </body>
