@@ -386,53 +386,6 @@
       font-style: italic;
     }
 
-    /* ── Ion Channel Panel ──────────────────── */
-    #channel-panel {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 10px;
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      border: 1px solid #e0e0e0;
-      border-radius: 4px;
-      padding: 9px 13px;
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      color: #555;
-      min-width: 130px;
-    }
-
-    #channel-panel .cp-label {
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: #999;
-      margin-bottom: 2px;
-      font-size: 9px;
-    }
-
-    #channel-panel label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      line-height: 1.4;
-    }
-
-    #channel-panel input[type="checkbox"] {
-      width: 11px;
-      height: 11px;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-
-    @media (max-width: 767px) {
-      #channel-panel { display: none; }
-    }
   </style>
 </head>
 <body>
@@ -463,7 +416,7 @@
             <a href="https://github.com/toucheLos/catan_agent" target="_blank" rel="noopener noreferrer" class="paper-icon-link" title="GitHub">
               <svg class="gh-icon" viewBox="0 0 16 16" aria-label="GitHub" role="img"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
             </a>
-            <a href="#" class="paper-icon-link" title="Paper (coming soon)">
+            <a href="/papers/catan-agent.pdf" target="_blank" rel="noopener noreferrer" class="paper-icon-link" title="Paper">
               <svg class="doc-icon" viewBox="0 0 16 16" aria-label="Paper" role="img"><path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/><path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/></svg>
             </a>
           </span>
@@ -485,7 +438,7 @@
             <a href="https://github.com/toucheLos/Neuro-VISOR-Dynamic-Modeling-of-Ion-Channels" target="_blank" rel="noopener noreferrer" class="paper-icon-link" title="GitHub">
               <svg class="gh-icon" viewBox="0 0 16 16" aria-label="GitHub" role="img"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
             </a>
-            <a href="#" class="paper-icon-link" title="Paper (coming soon)">
+            <a href="/papers/NeuroVISOR.pdf" target="_blank" rel="noopener noreferrer" class="paper-icon-link" title="Paper">
               <svg class="doc-icon" viewBox="0 0 16 16" aria-label="Paper" role="img"><path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/><path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/></svg>
             </a>
           </span>
@@ -620,8 +573,6 @@ document.getElementById('yr').textContent = new Date().getFullYear();
   });
 })();
 
-var channels = { M: true, T: false, H: false };
-
 // ── Canvas Background ────────────────────────────────────────────────────────
 (function () {
   var canvas = document.getElementById('bg-canvas');
@@ -663,31 +614,25 @@ var channels = { M: true, T: false, H: false };
     return segs;
   }
 
-  // ── CONNECTOME NEURON NETWORK (left side) ────────────────────────────────
+  // ── CONNECTOME NEURON NETWORK (full background) ──────────────────────────
   var NN = {
     neurons: [], particles: [],
-    leftW: 0,
-    traceBuf: null, tracePos: 0, traceW: 0, traceTX: 0, traceTY: 0,
 
     init: function () {
       this.neurons = []; this.particles = [];
-      var CONTENT_W = Math.min(740, W), CX = (W - CONTENT_W) / 2;
-      this.leftW = CX - 44;
-      if (this.leftW < 80) { this.traceBuf = null; return; }
-      var lx = 0, lw = this.leftW, count = 6;
-      var startY = H * 0.12, spanY = H * 0.76;
+      var count = 14;
+      var thresh = Math.max(W, H) * 0.3;
 
       for (var i = 0; i < count; i++) {
-        var cx = lx + lw * 0.42 + (Math.random() - 0.5) * lw * 0.28;
-        var cy = startY + (i / (count - 1)) * spanY;
+        var cx = W * 0.05 + Math.random() * W * 0.9;
+        var cy = H * 0.05 + Math.random() * H * 0.9;
         this.neurons.push({
           x: cx, y: cy, somaR: 4 + Math.random() * 2,
           segs: buildMorphology(cx, cy), axons: [],
           V: -65 + (Math.random() - 0.5) * 4,
           m: 0.0529, h: 0.5961, n: 0.3177,
-          np: 0.047, ns: 0.216, nu: 0.018, nr: 0.14,
           I_syn: 0, I_ext: 0,
-          spikeTimer: Math.floor(100 + i * 30 + Math.random() * 150),
+          spikeTimer: Math.floor(60 + i * 20 + Math.random() * 120),
           extDur: 0, prevV: -65
         });
       }
@@ -696,9 +641,9 @@ var channels = { M: true, T: false, H: false };
         for (var b = a + 1; b < count; b++) {
           var dx = this.neurons[a].x - this.neurons[b].x;
           var dy = this.neurons[a].y - this.neurons[b].y;
-          if (Math.sqrt(dx * dx + dy * dy) < H * 0.22 + 60) {
+          if (Math.sqrt(dx * dx + dy * dy) < thresh) {
             var na = this.neurons[a], nb = this.neurons[b];
-            var jx = (Math.random() - 0.5) * 24, jy = (Math.random() - 0.5) * 24;
+            var jx = (Math.random() - 0.5) * 40, jy = (Math.random() - 0.5) * 40;
             var midX = (na.x + nb.x) / 2 + jx, midY = (na.y + nb.y) / 2 + jy;
             na.axons.push({
               sx: na.x, sy: na.y,
@@ -709,23 +654,16 @@ var channels = { M: true, T: false, H: false };
           }
         }
       }
-
-      this.traceW = Math.min(lw - 16, 180);
-      this.traceTX = lx + (lw - this.traceW) / 2;
-      this.traceTY = H - 68;
-      this.traceBuf = new Float32Array(this.traceW).fill(-65);
-      this.tracePos = 0;
     },
 
     update: function () {
-      if (this.leftW < 80) return;
       var self = this, dt = 0.05, Cm = 1;
-      var gNa = 56, gK = 6, gL = 0.0205, ENa = 50, EK = -90, EL = -70.3;
+      var gNa = 120, gK = 36, gL = 0.3, ENa = 50, EK = -77, EL = -54.387;
 
       this.neurons.forEach(function (nd) {
         if (--nd.spikeTimer <= 0) {
-          nd.spikeTimer = Math.floor(100 + Math.random() * 220);
-          nd.I_ext = 1.0; nd.extDur = 60;
+          nd.spikeTimer = Math.floor(60 + Math.random() * 120);
+          nd.I_ext = 8; nd.extDur = 40;
         }
         if (nd.extDur > 0) { nd.extDur--; } else { nd.I_ext = 0; }
 
@@ -734,31 +672,7 @@ var channels = { M: true, T: false, H: false };
           var INa = gNa * nd.m * nd.m * nd.m * nd.h * (nd.V - ENa);
           var IK  = gK  * nd.n * nd.n * nd.n * nd.n * (nd.V - EK);
           var IL  = gL  * (nd.V - EL);
-          var IM = 0, IT = 0, Ih = 0;
-
-          if (channels.M) {
-            var p_inf = 1 / (1 + Math.exp(-(nd.V + 35) / 10));
-            var tau_p = 608 / (3.3 * Math.exp((nd.V + 35) / 20) + Math.exp(-(nd.V + 35) / 20));
-            nd.np += (p_inf - nd.np) / tau_p * dt;
-            IM = 0.075 * nd.np * (nd.V - EK);
-          }
-          if (channels.T) {
-            var s_inf = 1 / (1 + Math.exp(-(nd.V + 57) / 6.2));
-            var tau_s = Math.max(0.1, 0.612 + 1 / (Math.exp(-(nd.V + 132) / 16.7) + Math.exp((nd.V + 16.8) / 18.2)));
-            var u_inf = 1 / (1 + Math.exp((nd.V + 81) / 4));
-            var tau_u = nd.V < -80 ? Math.exp((nd.V + 467) / 66.6) : 28 + Math.exp(-(nd.V + 22) / 10.5);
-            nd.ns += (s_inf - nd.ns) / tau_s * dt;
-            nd.nu += (u_inf - nd.nu) / tau_u * dt;
-            IT = 0.4 * nd.ns * nd.ns * nd.nu * (nd.V - 120);
-          }
-          if (channels.H) {
-            var r_inf = 1 / (1 + Math.exp((nd.V + 75) / 5.5));
-            var tau_r = Math.max(10, 1 / (Math.exp(-14.59 - 0.086 * nd.V) + Math.exp(-1.87 + 0.0701 * nd.V)));
-            nd.nr += (r_inf - nd.nr) / tau_r * dt;
-            Ih = 0.0175 * nd.nr * (nd.V + 43);
-          }
-
-          nd.V += ((nd.I_ext + nd.I_syn - INa - IK - IL - IM - IT - Ih) / Cm) * dt;
+          nd.V += ((nd.I_ext + nd.I_syn - INa - IK - IL) / Cm) * dt;
           nd.m += (rates.am * (1 - nd.m) - rates.bm * nd.m) * dt;
           nd.h += (rates.ah * (1 - nd.h) - rates.bh * nd.h) * dt;
           nd.n += (rates.an * (1 - nd.n) - rates.bn * nd.n) * dt;
@@ -773,11 +687,6 @@ var channels = { M: true, T: false, H: false };
         nd.prevV = nd.V;
       });
 
-      if (this.neurons.length > 0 && this.traceBuf) {
-        this.traceBuf[this.tracePos] = this.neurons[0].V;
-        this.tracePos = (this.tracePos + 1) % this.traceW;
-      }
-
       var alive = [];
       this.particles.forEach(function (p) {
         p.t += p.spd;
@@ -791,7 +700,6 @@ var channels = { M: true, T: false, H: false };
     },
 
     draw: function () {
-      if (this.leftW < 80) return;
       var C = '80,180,160';
       ctx.save();
       ctx.globalAlpha = 0.14;
@@ -838,187 +746,6 @@ var channels = { M: true, T: false, H: false };
         ctx.beginPath(); ctx.arc(px, py, 2.5, 0, Math.PI * 2); ctx.fill();
       });
 
-      if (this.traceBuf && this.traceW > 0) {
-        ctx.globalAlpha = 0.5;
-        var tx = this.traceTX, ty = this.traceTY, tw = this.traceW, th = 36;
-        var VMIN = -80, VMAX = 52;
-        var restY = ty + th * (1 - (-65 - VMIN) / (VMAX - VMIN));
-        ctx.strokeStyle = 'rgba(' + C + ',0.22)';
-        ctx.lineWidth = 0.5;
-        ctx.setLineDash([2, 4]);
-        ctx.beginPath(); ctx.moveTo(tx, restY); ctx.lineTo(tx + tw, restY); ctx.stroke();
-        ctx.setLineDash([]);
-        ctx.strokeStyle = 'rgba(' + C + ',0.85)';
-        ctx.lineWidth = 0.8;
-        ctx.beginPath();
-        for (var i = 0; i < tw; i++) {
-          var vy = ty + th * (1 - (this.traceBuf[(this.tracePos + i) % tw] - VMIN) / (VMAX - VMIN));
-          if (i === 0) ctx.moveTo(tx, vy); else ctx.lineTo(tx + i, vy);
-        }
-        ctx.stroke();
-      }
-
-      ctx.restore();
-    }
-  };
-
-  // ── STIGMERGIC SWARM (right side) ──────────────────────────────────────────
-  var SWARM = {
-    agents: [], markers: [], nextTask: 40, rx: 0, rw: 0,
-    ROLE_COLORS: ['176,128,48', '100,160,220', '190,90,140', '80,190,110'],
-    ROLE_LABELS: ['RES', 'COD', 'RSN', 'MEM'],
-    TASK_LABELS: ['search', 'analyze', 'codegen', 'retrieve', 'synthesize'],
-
-    init: function () {
-      this.agents = []; this.markers = []; this.nextTask = 40;
-      var CONTENT_W = Math.min(740, W), CX = (W - CONTENT_W) / 2;
-      this.rx = CX + CONTENT_W + 44;
-      this.rw = W - this.rx;
-      if (this.rw < 80) return;
-      for (var i = 0; i < 8; i++) {
-        this.agents.push({
-          x: this.rx + 8 + Math.random() * (this.rw - 16),
-          y: H * 0.1 + Math.random() * H * 0.8,
-          vx: (Math.random() - 0.5) * 0.6, vy: (Math.random() - 0.5) * 0.6,
-          role: i % 4, state: 'wander', target: null, workTimer: 0, trail: []
-        });
-      }
-    },
-
-    update: function () {
-      if (this.rw < 80) return;
-      var self = this;
-
-      if (--this.nextTask <= 0) {
-        this.nextTask = Math.floor(50 + Math.random() * 70);
-        this.markers.push({
-          x: this.rx + 8 + Math.random() * (this.rw - 16),
-          y: H * 0.1 + Math.random() * H * 0.8,
-          type: 'task',
-          label: this.TASK_LABELS[Math.floor(Math.random() * this.TASK_LABELS.length)],
-          strength: 1.0
-        });
-      }
-
-      this.markers = this.markers.filter(function (mk) {
-        mk.strength -= 0.0014; return mk.strength >= 0.05;
-      });
-
-      this.agents.forEach(function (ag) {
-        if (ag.state === 'wander') {
-          ag.vx += (Math.random() - 0.5) * 0.12;
-          ag.vy += (Math.random() - 0.5) * 0.12;
-          ag.vx += (self.rx + self.rw / 2 - ag.x) * 0.0003;
-          ag.vy += (H / 2 - ag.y) * 0.0003;
-          var spd = Math.sqrt(ag.vx * ag.vx + ag.vy * ag.vy);
-          if (spd > 0.9) { ag.vx *= 0.9 / spd; ag.vy *= 0.9 / spd; }
-          var bestMk = null, bestStr = 0;
-          self.markers.forEach(function (mk) {
-            if (mk.type !== 'task') return;
-            var dx = mk.x - ag.x, dy = mk.y - ag.y;
-            if (dx*dx + dy*dy < 10000 && mk.strength > bestStr) { bestStr = mk.strength; bestMk = mk; }
-          });
-          if (bestMk) { ag.state = 'seek'; ag.target = bestMk; }
-
-        } else if (ag.state === 'seek') {
-          if (!ag.target || ag.target.strength < 0.05) { ag.state = 'wander'; ag.target = null; }
-          else {
-            var dx = ag.target.x - ag.x, dy = ag.target.y - ag.y;
-            var d = Math.sqrt(dx * dx + dy * dy);
-            if (d < 8) { ag.state = 'work'; ag.workTimer = 90 + Math.floor(Math.random() * 60); }
-            else {
-              ag.vx += dx / d * 0.18; ag.vy += dy / d * 0.18;
-              var spd2 = Math.sqrt(ag.vx * ag.vx + ag.vy * ag.vy);
-              if (spd2 > 1.2) { ag.vx *= 1.2 / spd2; ag.vy *= 1.2 / spd2; }
-            }
-          }
-
-        } else if (ag.state === 'work') {
-          if (!ag.target || ag.target.strength < 0.05) { ag.state = 'wander'; ag.target = null; }
-          else if (--ag.workTimer <= 0) {
-            self.markers.push({
-              x: ag.target.x + (Math.random() - 0.5) * 12,
-              y: ag.target.y + (Math.random() - 0.5) * 12,
-              type: 'result', label: 'done', strength: 0.8
-            });
-            ag.target.strength = 0;
-            ag.state = 'wander'; ag.target = null;
-          }
-        }
-
-        ag.x += ag.vx; ag.y += ag.vy;
-        if (ag.x < self.rx + 4)           { ag.x = self.rx + 4;           ag.vx =  Math.abs(ag.vx); }
-        if (ag.x > self.rx + self.rw - 4) { ag.x = self.rx + self.rw - 4; ag.vx = -Math.abs(ag.vx); }
-        if (ag.y < 4)    { ag.y = 4;    ag.vy =  Math.abs(ag.vy); }
-        if (ag.y > H - 4){ ag.y = H - 4; ag.vy = -Math.abs(ag.vy); }
-        ag.trail.push({ x: ag.x, y: ag.y });
-        if (ag.trail.length > 5) ag.trail.shift();
-      });
-    },
-
-    draw: function () {
-      if (this.rw < 80) return;
-      var self = this;
-      ctx.save();
-
-      this.markers.forEach(function (mk) {
-        var C = mk.type === 'task' ? '176,128,48' : '100,176,80';
-        var r = 4 + mk.strength * 8;
-        ctx.globalAlpha = mk.strength * 0.35;
-        ctx.fillStyle = 'rgba(' + C + ',1)';
-        ctx.beginPath(); ctx.arc(mk.x, mk.y, r, 0, Math.PI * 2); ctx.fill();
-        if (mk.type === 'task' && mk.strength > 0.2) {
-          ctx.globalAlpha = mk.strength * 0.55;
-          ctx.fillStyle = 'rgba(' + C + ',0.9)';
-          ctx.font = '6px monospace';
-          ctx.textAlign = 'center';
-          ctx.fillText(mk.label, mk.x, mk.y - r - 2);
-          ctx.textAlign = 'left';
-        }
-      });
-
-      this.agents.forEach(function (ag) {
-        var C = self.ROLE_COLORS[ag.role];
-        var working = ag.state === 'work';
-
-        if (ag.state !== 'wander' && ag.trail.length > 1) {
-          ctx.globalAlpha = 0.2;
-          ctx.strokeStyle = 'rgba(' + C + ',1)';
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ag.trail.forEach(function (pt, ti) { if (ti === 0) ctx.moveTo(pt.x, pt.y); else ctx.lineTo(pt.x, pt.y); });
-          ctx.stroke();
-        }
-
-        if (ag.state === 'seek' && ag.target) {
-          ctx.globalAlpha = 0.22;
-          ctx.strokeStyle = 'rgba(' + C + ',1)';
-          ctx.lineWidth = 0.7;
-          ctx.setLineDash([3, 4]);
-          ctx.beginPath(); ctx.moveTo(ag.x, ag.y); ctx.lineTo(ag.target.x, ag.target.y); ctx.stroke();
-          ctx.setLineDash([]);
-        }
-
-        if (working) {
-          ctx.globalAlpha = 0.28;
-          var g2 = ctx.createRadialGradient(ag.x, ag.y, 0, ag.x, ag.y, 10);
-          g2.addColorStop(0, 'rgba(' + C + ',0.8)'); g2.addColorStop(1, 'rgba(' + C + ',0)');
-          ctx.fillStyle = g2;
-          ctx.beginPath(); ctx.arc(ag.x, ag.y, 10, 0, Math.PI * 2); ctx.fill();
-        }
-
-        ctx.globalAlpha = working ? 0.85 : 0.45;
-        ctx.fillStyle = 'rgba(' + C + ',1)';
-        ctx.beginPath(); ctx.arc(ag.x, ag.y, 3.5, 0, Math.PI * 2); ctx.fill();
-
-        ctx.globalAlpha = working ? 0.75 : 0.3;
-        ctx.fillStyle = 'rgba(' + C + ',1)';
-        ctx.font = '5px monospace';
-        ctx.textAlign = 'center';
-        ctx.fillText(self.ROLE_LABELS[ag.role], ag.x, ag.y - 5.5);
-        ctx.textAlign = 'left';
-      });
-
       ctx.restore();
     }
   };
@@ -1027,14 +754,12 @@ var channels = { M: true, T: false, H: false };
     W = canvas.width  = window.innerWidth;
     H = canvas.height = window.innerHeight;
     NN.init();
-    SWARM.init();
   }
 
   function loop() {
     if (paused) return;
     ctx.clearRect(0, 0, W, H);
-    NN.update();    NN.draw();
-    SWARM.update(); SWARM.draw();
+    NN.update(); NN.draw();
     raf = requestAnimationFrame(loop);
   }
 
@@ -1064,7 +789,6 @@ var channels = { M: true, T: false, H: false };
   var raf = null, paused = true;
 
   var V = -65, m = 0.0529, h = 0.5961, n = 0.3177;
-  var wp = 0.047, ws = 0.216, wu = 0.018, wr = 0.14;
   var injectSteps = 0;
   var VMIN = -80, VMAX = 52;
 
@@ -1100,31 +824,7 @@ var channels = { M: true, T: false, H: false };
       var INa = gNa * m * m * m * h * (V - ENa);
       var IK  = gK  * n * n * n * n * (V - EK);
       var IL  = gL  * (V - EL);
-      var IM = 0, IT = 0, Ih = 0;
-
-      if (channels.M) {
-        var p_inf = 1 / (1 + Math.exp(-(V + 35) / 10));
-        var tau_p = 608 / (3.3 * Math.exp((V + 35) / 20) + Math.exp(-(V + 35) / 20));
-        wp += (p_inf - wp) / tau_p * dt;
-        IM = 0.075 * wp * (V - EK);
-      }
-      if (channels.T) {
-        var s_inf = 1 / (1 + Math.exp(-(V + 57) / 6.2));
-        var tau_s = Math.max(0.1, 0.612 + 1 / (Math.exp(-(V + 132) / 16.7) + Math.exp((V + 16.8) / 18.2)));
-        var u_inf = 1 / (1 + Math.exp((V + 81) / 4));
-        var tau_u = V < -80 ? Math.exp((V + 467) / 66.6) : 28 + Math.exp(-(V + 22) / 10.5);
-        ws += (s_inf - ws) / tau_s * dt;
-        wu += (u_inf - wu) / tau_u * dt;
-        IT = 0.4 * ws * ws * wu * (V - 120);
-      }
-      if (channels.H) {
-        var r_inf = 1 / (1 + Math.exp((V + 75) / 5.5));
-        var tau_r = Math.max(10, 1 / (Math.exp(-14.59 - 0.086 * V) + Math.exp(-1.87 + 0.0701 * V)));
-        wr += (r_inf - wr) / tau_r * dt;
-        Ih = 0.0175 * wr * (V + 43);
-      }
-
-      V += ((Iext - INa - IK - IL - IM - IT - Ih) / Cm) * dt;
+      V += ((Iext - INa - IK - IL) / Cm) * dt;
       m += (r.am * (1 - m) - r.bm * m) * dt;
       h += (r.ah * (1 - h) - r.bh * h) * dt;
       n += (r.an * (1 - n) - r.bn * n) * dt;
@@ -1382,19 +1082,5 @@ var channels = { M: true, T: false, H: false };
 })();
 </script>
 
-<div id="channel-panel">
-  <div class="cp-label">Ion Channels</div>
-  <label><input type="checkbox" id="ch-m" checked> I<sub>M</sub> slow K&#8314;</label>
-  <label><input type="checkbox" id="ch-t"> I<sub>T</sub> T-Ca&#178;</label>
-  <label><input type="checkbox" id="ch-h"> I<sub>h</sub> HCN</label>
-</div>
-
-<script>
-(function () {
-  document.getElementById('ch-m').addEventListener('change', function () { channels.M = this.checked; });
-  document.getElementById('ch-t').addEventListener('change', function () { channels.T = this.checked; });
-  document.getElementById('ch-h').addEventListener('change', function () { channels.H = this.checked; });
-})();
-</script>
 </body>
 </html>
