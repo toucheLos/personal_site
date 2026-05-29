@@ -621,11 +621,12 @@ document.getElementById('yr').textContent = new Date().getFullYear();
     init: function () {
       this.neurons = []; this.particles = [];
       var count = 14;
-      var thresh = Math.max(W, H) * 0.3;
+      var docH = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, H);
+      var thresh = Math.max(W, H) * 0.35;
 
       for (var i = 0; i < count; i++) {
         var cx = W * 0.05 + Math.random() * W * 0.9;
-        var cy = H * 0.05 + Math.random() * H * 0.9;
+        var cy = docH * 0.02 + Math.random() * docH * 0.96;
         this.neurons.push({
           x: cx, y: cy, somaR: 4 + Math.random() * 2,
           segs: buildMorphology(cx, cy), axons: [],
@@ -701,7 +702,9 @@ document.getElementById('yr').textContent = new Date().getFullYear();
 
     draw: function () {
       var C = '80,180,160';
+      var scrollY = window.scrollY || window.pageYOffset || 0;
       ctx.save();
+      ctx.translate(0, -scrollY);
       ctx.globalAlpha = 0.14;
 
       this.neurons.forEach(function (nd) {
