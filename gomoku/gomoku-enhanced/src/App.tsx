@@ -57,9 +57,10 @@ export default function App() {
   const [replayGame, setReplayGame] = useState<GameState | null>(null);
 
   // ── Mode / multiplayer state ───────────────────────────────────────
-  const [appMode, setAppMode] = useState<AppMode>(() =>
-    loadDisplayName() ? 'select' : 'name-entry',
-  );
+  const [appMode, setAppMode] = useState<AppMode>(() => {
+    if (!loadDisplayName()) return 'name-entry';
+    return new URLSearchParams(window.location.search).get('join') ? 'online-setup' : 'select';
+  });
   const [displayName, setDisplayName] = useState<string>(() => loadDisplayName());
   const [peerRole, setPeerRole] = useState<PeerRole | null>(null);
   const [peerRoomCode, setPeerRoomCode] = useState<string | null>(null);
@@ -326,7 +327,11 @@ export default function App() {
   if (appMode === 'name-entry') {
     return (
       <NameEntry
-        onDone={(name) => { setDisplayName(name); setAppMode('select'); }}
+        onDone={(name) => {
+          setDisplayName(name);
+          const dest = new URLSearchParams(window.location.search).get('join') ? 'online-setup' : 'select';
+          setAppMode(dest);
+        }}
       />
     );
   }

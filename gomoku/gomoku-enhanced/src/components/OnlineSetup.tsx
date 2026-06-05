@@ -1,5 +1,39 @@
 import { useState, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+
+const WORD_CODES = [
+  'ABLE','ARCH','ARMY','BACK','BALL','BAND','BARK','BARN','BATH','BEAM',
+  'BEAR','BIRD','BLUE','BOAT','BOLD','BOOK','BURN','CALM','CAMP','CARD',
+  'CAVE','CLAY','CLUB','COAT','CODE','COIN','COOL','CORE','CORN','CREW',
+  'CURE','DARK','DAWN','DEAL','DEEP','DIVE','DOOR','DRAG','DRAW','DROP',
+  'DRUM','DUSK','DUST','EDGE','EPIC','FACE','FACT','FALL','FARM','FAST',
+  'FATE','FIRE','FISH','FLAG','FLAT','FLOW','FOAM','FOLD','FOLK','FOOD',
+  'FORD','FORM','FREE','FUEL','FULL','FUND','GAME','GATE','GEAR','GIFT',
+  'GLOW','GOAL','GOLD','GOOD','GRAB','GROW','HALF','HAND','HARD','HARM',
+  'HEAD','HEAL','HEAT','HELP','HIDE','HIGH','HILL','HOLE','HOLY','HOME',
+  'HOPE','HORN','HOST','HUNT','ICON','JADE','JUMP','JUST','KEEN','KEEP',
+  'KICK','KIND','KING','KNOW','LACE','LAKE','LAND','LANE','LAVA','LAWN',
+  'LEAD','LEAF','LEAN','LEAP','LENS','LIFT','LIKE','LIME','LINE','LINK',
+  'LION','LIVE','LOAD','LOCK','LOFT','LONE','LONG','LOOK','LOOP','LORD',
+  'LOVE','LUCK','LUSH','MAIN','MAKE','MANY','MARK','MASK','MAZE','MEAL',
+  'MEAT','MELT','MILD','MILE','MIND','MINT','MIST','MODE','MOON','MOVE',
+  'MUSE','MUST','NAME','NAVY','NEAT','NECK','NEED','NEST','NEWS','NICE',
+  'NODE','NORM','NOTE','NOVA','OATH','ONCE','OPEN','PACE','PAGE','PAIN',
+  'PALE','PALM','PART','PASS','PAST','PATH','PEAK','PINE','PINK','PLAN',
+  'POEM','POLE','POOL','PORT','POSE','POST','POUR','PREY','PULL','PUMP',
+  'PURE','PUSH','RACE','RACK','RAGE','RAIN','RANK','RARE','RATE','READ',
+  'REAL','REED','REEF','RELY','RENT','REST','RICE','RICH','RIDE','RING',
+  'RISE','RISK','ROAD','ROCK','ROLE','ROLL','ROOF','ROPE','ROSE','RULE',
+  'RUSH','RUST','SAFE','SAGE','SAIL','SALT','SAME','SAND','SEAL','SEED',
+  'SEEK','SELF','SHED','SHIP','SHOE','SHOT','SHOW','SIGN','SILK','SITE',
+  'SIZE','SKIN','SLIM','SLIP','SLOW','SNOW','SOAR','SOFT','SOIL','SOME',
+  'SONG','SOON','SORT','SOUL','SOUP','SPAN','SPIN','SPOT','SPUR','STAR',
+  'STEM','STEP','STOP','SUIT','SURF','SWAP','TALE','TALK','TALL','TAME',
+  'TANK','TAPE','TASK','TEAM','TELL','TENT','TERM','TIDE','TILE','TIME',
+  'TONE','TOOL','TREE','TRIP','TRUE','TURF','TURN','TYPE','UNIT','VALE',
+  'VAST','VEIN','VIEW','VINE','VOTE','WADE','WAKE','WALK','WALL','WARD',
+  'WARM','WAVE','WIDE','WILD','WILL','WIND','WINE','WING','WISE','WOLF',
+  'WOOD','WORD','WORK','WRAP','YEAR','ZINC','ZONE',
+];
 
 interface Props {
   onCreated: (roomCode: string) => void;
@@ -18,7 +52,7 @@ export default function OnlineSetup({ onCreated, onJoined, onBack }: Props) {
   }, []);
 
   const handleCreate = () => {
-    const code = uuidv4().replace(/-/g, '').slice(0, 8).toUpperCase();
+    const code = WORD_CODES[Math.floor(Math.random() * WORD_CODES.length)];
     onCreated(code);
   };
 

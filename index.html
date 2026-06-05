@@ -627,7 +627,7 @@ document.getElementById('yr').textContent = new Date().getFullYear();
         var cx = W * 0.05 + Math.random() * W * 0.9;
         var cy = docH * 0.02 + Math.random() * docH * 0.96;
         this.neurons.push({
-          x: cx, y: cy, somaR: 4 + Math.random() * 2,
+          x: cx, y: cy, somaR: 6 + Math.random() * 3,
           segs: buildMorphology(cx, cy), axons: [],
           V: -65 + (Math.random() - 0.5) * 4,
           m: 0.0529, h: 0.5961, n: 0.3177,
@@ -708,20 +708,20 @@ document.getElementById('yr').textContent = new Date().getFullYear();
 
       this.neurons.forEach(function (nd) {
         ctx.strokeStyle = 'rgba(' + C + ',0.6)';
-        ctx.lineWidth = 0.7;
+        ctx.lineWidth = 1.5;
         nd.segs.forEach(function (seg) {
           ctx.beginPath(); ctx.moveTo(seg.x1, seg.y1); ctx.lineTo(seg.x2, seg.y2); ctx.stroke();
         });
 
         nd.axons.forEach(function (ax) {
           ctx.strokeStyle = 'rgba(' + C + ',0.35)';
-          ctx.lineWidth = 0.6;
+          ctx.lineWidth = 1.2;
           ctx.beginPath();
           ctx.moveTo(ax.sx, ax.sy);
           ctx.bezierCurveTo(ax.cp1x, ax.cp1y, ax.cp2x, ax.cp2y, ax.ex, ax.ey);
           ctx.stroke();
           ctx.fillStyle = 'rgba(' + C + ',0.5)';
-          ctx.beginPath(); ctx.arc(ax.ex, ax.ey, 2, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(ax.ex, ax.ey, 3, 0, Math.PI * 2); ctx.fill();
         });
 
         var firing = nd.V > 0;
@@ -745,7 +745,7 @@ document.getElementById('yr').textContent = new Date().getFullYear();
         var px = mt*mt*mt*ax.sx + 3*mt*mt*t*ax.cp1x + 3*mt*t*t*ax.cp2x + t*t*t*ax.ex;
         var py = mt*mt*mt*ax.sy + 3*mt*mt*t*ax.cp1y + 3*mt*t*t*ax.cp2y + t*t*t*ax.ey;
         ctx.fillStyle = 'rgba(' + C + ',0.9)';
-        ctx.beginPath(); ctx.arc(px, py, 2.5, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(px, py, 3.5, 0, Math.PI * 2); ctx.fill();
       });
 
       ctx.restore();

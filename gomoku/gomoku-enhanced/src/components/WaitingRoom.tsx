@@ -95,11 +95,14 @@ export default function WaitingRoom({ role, roomCode, isConnected, error, onBack
   }
 
   if (error) {
+    const friendly = /negotiation|peer.unavailable|could not connect/i.test(error)
+      ? "Game not found — the host may have closed their tab or the code is wrong."
+      : error;
     return (
       <div className="min-h-screen bg-[#111] text-stone-200 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4 p-8 border border-stone-800 rounded-xl bg-[#0e0e0e] max-w-sm w-full mx-4">
           <p className="text-stone-400 text-sm">Connection error</p>
-          <p className="text-red-400 text-xs text-center">{error}</p>
+          <p className="text-red-400 text-xs text-center">{friendly}</p>
           <button
             onClick={onBack}
             className="py-2 px-4 rounded border border-stone-700 text-stone-300 hover:bg-stone-800 transition-colors text-sm"
