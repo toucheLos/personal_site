@@ -530,27 +530,6 @@
       <div class="edu-meta">Temple University &middot; May 2026</div>
     </section>
 
-    <section aria-labelledby="lbl-simulations">
-      <h2 class="section-label" id="lbl-simulations">Simulations</h2>
-
-      <div class="sim-card">
-        <div class="sim-header">
-          <span class="sim-title">Hodgkin-Huxley Neuron</span>
-          <button id="hh-inject-btn" class="sim-btn">Inject current</button>
-        </div>
-        <canvas id="hh-widget-canvas" width="540" height="200"></canvas>
-        <p class="sim-desc">Real-time simulation of a single neuron using the 1952 Hodgkin-Huxley model (Na&#8314;/K&#8314; channels). Each click injects 15&nbsp;&#956;A/cm&#178; for 1&nbsp;ms &#8212; enough to trigger an action potential.</p>
-      </div>
-
-      <div class="sim-card">
-        <div class="sim-header">
-          <span class="sim-title">Stigmergic Swarm</span>
-          <button id="hpc-submit-btn" class="sim-btn">Add task</button>
-        </div>
-        <canvas id="hpc-widget-canvas" width="540" height="260"></canvas>
-        <p class="sim-desc">Eight agents (researcher, coder, reasoner, memory) coordinate without a central controller. Agents deposit pheromone task markers, seek nearby signals, and leave result traces — emergent collective behavior from simple local rules.</p>
-      </div>
-    </section>
 
   </main>
 
@@ -649,7 +628,8 @@ document.getElementById('yr').textContent = new Date().getFullYear();
               sx: na.x, sy: na.y,
               cp1x: na.x + (midX - na.x) * 0.5, cp1y: na.y + (midY - na.y) * 0.5,
               cp2x: midX + (nb.x - midX) * 0.5,  cp2y: midY + (nb.y - midY) * 0.5,
-              ex: nb.x, ey: nb.y, targetIdx: b
+              ex: nb.x, ey: nb.y, targetIdx: b,
+              weight: 0.05 + Math.random() * 0.2
             });
           }
         }
@@ -681,19 +661,40 @@ document.getElementById('yr').textContent = new Date().getFullYear();
 
         if (nd.prevV < 10 && nd.V >= 10) {
           nd.axons.forEach(function (ax) {
-            self.particles.push({ ax: ax, t: 0, spd: 0.006 + Math.random() * 0.004 });
+            // Fire probability scales with synaptic weight (pheromone model)
+            if (Math.random() < 0.2 + ax.weight * 0.8) {
+              self.particles.push({ ax: ax, t: 0, spd: 0.006 + Math.random() * 0.004 });
+            }
           });
         }
         nd.prevV = nd.V;
       });
 
+      // Synaptic decay — unused connections weaken (pheromone evaporation)
+      var mu_E = 0.002;
+      this.neurons.forEach(function (nd) {
+        nd.axons.forEach(function (ax) {
+          ax.weight = Math.max(0.01, ax.weight * (1 - mu_E));
+        });
+      });
+
       var alive = [];
       this.particles.forEach(function (p) {
         p.t += p.spd;
+        // LTP: synapse strengthens as spike travels (pheromone deposition)
+        p.ax.weight = Math.min(1, p.ax.weight + 0.001);
         if (p.t < 1) { alive.push(p); }
         else {
           var ti = p.ax.targetIdx;
-          if (ti >= 0 && ti < self.neurons.length) self.neurons[ti].I_syn += 1.8;
+          if (ti >= 0 && ti < self.neurons.length) {
+            var target = self.neurons[ti];
+            // Synaptic current weighted by connection strength
+            target.I_syn += 1.8 * (0.4 + p.ax.weight * 0.6);
+            // Hebbian bonus: extra potentiation when target is also active
+            if (target.V > -55) {
+              p.ax.weight = Math.min(1, p.ax.weight + 0.07);
+            }
+          }
         }
       });
       this.particles = alive;
@@ -714,14 +715,15 @@ document.getElementById('yr').textContent = new Date().getFullYear();
         });
 
         nd.axons.forEach(function (ax) {
-          ctx.strokeStyle = 'rgba(' + C + ',0.35)';
-          ctx.lineWidth = 1.2;
+          var w = ax.weight;
+          ctx.strokeStyle = 'rgba(' + C + ',' + (0.08 + w * 0.55) + ')';
+          ctx.lineWidth = 0.3 + w * 2.8;
           ctx.beginPath();
           ctx.moveTo(ax.sx, ax.sy);
           ctx.bezierCurveTo(ax.cp1x, ax.cp1y, ax.cp2x, ax.cp2y, ax.ex, ax.ey);
           ctx.stroke();
-          ctx.fillStyle = 'rgba(' + C + ',0.5)';
-          ctx.beginPath(); ctx.arc(ax.ex, ax.ey, 3, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = 'rgba(' + C + ',' + (0.2 + w * 0.7) + ')';
+          ctx.beginPath(); ctx.arc(ax.ex, ax.ey, 1 + w * 3.5, 0, Math.PI * 2); ctx.fill();
         });
 
         var firing = nd.V > 0;
@@ -745,7 +747,7 @@ document.getElementById('yr').textContent = new Date().getFullYear();
         var px = mt*mt*mt*ax.sx + 3*mt*mt*t*ax.cp1x + 3*mt*t*t*ax.cp2x + t*t*t*ax.ex;
         var py = mt*mt*mt*ax.sy + 3*mt*mt*t*ax.cp1y + 3*mt*t*t*ax.cp2y + t*t*t*ax.ey;
         ctx.fillStyle = 'rgba(' + C + ',0.9)';
-        ctx.beginPath(); ctx.arc(px, py, 3.5, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(px, py, 2 + ax.weight * 2.5, 0, Math.PI * 2); ctx.fill();
       });
 
       ctx.restore();
