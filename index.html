@@ -559,6 +559,26 @@ document.getElementById('yr').textContent = new Date().getFullYear();
   var W = 0, H = 0;
   var raf = null;
 
+  // STDP — Bi & Poo (1998)
+  var STDP_A_PLUS   = 0.01,  STDP_TAU_PLUS  = 20;
+  var STDP_A_MINUS  = 0.0105, STDP_TAU_MINUS = 20;
+
+  // Structural plasticity — Holtmaat & Bhatt (2009)
+  var SPIKE_TRACE_DECAY      = 0.02;
+  var K_FORM                 = 0.15;
+  var PRUNE_WEIGHT_THRESH    = 0.008;
+  var PRUNE_QUIESCENT_THRESH = 180;
+  var MAX_NEURONS            = 20;
+  var NEUROGEN_THRESH        = 8;
+
+  // Transformer self-attention — Vaswani et al. (2017)
+  var ATTN_GAMMA  = 0.2;
+  var INV_SQRT2   = 1 / Math.sqrt(2);
+
+  // Click spatial attention
+  var CLICK_I          = 15;
+  var CLICK_SIGMA_FRAC = 0.15;
+
   function hhRates(V) {
     var dv40 = V + 40;
     var am = Math.abs(dv40) < 1e-7 ? 1.0 : 0.1 * dv40 / (1 - Math.exp(-dv40 / 10));
@@ -592,9 +612,110 @@ document.getElementById('yr').textContent = new Date().getFullYear();
     return segs;
   }
 
+  // ── Helper functions ─────────────────────────────────────────────────────
+
+  function randProj() {
+    var M = [[], []];
+    for (var r = 0; r < 2; r++)
+      for (var c = 0; c < 4; c++)
+        M[r][c] = (Math.random() - 0.5) * 1.0;
+    return M;
+  }
+
+  function matVec2x4(M, v4) {
+    return [
+      M[0][0]*v4[0] + M[0][1]*v4[1] + M[0][2]*v4[2] + M[0][3]*v4[3],
+      M[1][0]*v4[0] + M[1][1]*v4[1] + M[1][2]*v4[2] + M[1][3]*v4[3]
+    ];
+  }
+
+  function dot2(a, b) { return a[0]*b[0] + a[1]*b[1]; }
+
+  function buildAxon(na, nb, bIdx) {
+    var jx = (Math.random()-0.5)*40, jy = (Math.random()-0.5)*40;
+    var midX = (na.x+nb.x)/2+jx, midY = (na.y+nb.y)/2+jy;
+    return {
+      sx: na.x, sy: na.y,
+      cp1x: na.x + (midX-na.x)*0.5, cp1y: na.y + (midY-na.y)*0.5,
+      cp2x: midX + (nb.x-midX)*0.5,  cp2y: midY + (nb.y-midY)*0.5,
+      ex: nb.x, ey: nb.y,
+      targetIdx: bIdx, preIdx: -1,
+      weight: 0.05 + Math.random()*0.15,
+      quiescentFrames: 0, age: 0
+    };
+  }
+
+  // Bi & Poo (1998): ΔW = A+ exp(-Δt/τ+) if pre→post, else -A- exp(Δt/τ-)
+  function stdpDeltaW(tPre, tPost) {
+    var dt = tPost - tPre;
+    if (dt > 0) return  STDP_A_PLUS  * Math.exp(-dt / STDP_TAU_PLUS);
+    if (dt < 0) return -STDP_A_MINUS * Math.exp( dt / STDP_TAU_MINUS);
+    return 0;
+  }
+
+  // Vaswani et al. (2017): single-head self-attention over neuron state vectors
+  function computeAttention(neurons) {
+    var N = neurons.length;
+    for (var i = 0; i < N; i++) {
+      var nd = neurons[i];
+      var s = [Math.max(-1, Math.min(1, (nd.V+65)/80)), nd.m, nd.h, nd.n];
+      nd.q = matVec2x4(NN.W_Q, s);
+      nd.k = matVec2x4(NN.W_K, s);
+      nd.v = matVec2x4(NN.W_V, s);
+    }
+    for (var i = 0; i < N; i++) {
+      var scores = [], maxS = -Infinity, sumE = 0;
+      for (var j = 0; j < N; j++) {
+        var sc = dot2(neurons[i].q, neurons[j].k) * INV_SQRT2;
+        scores.push(sc);
+        if (sc > maxS) maxS = sc;
+      }
+      for (var j = 0; j < N; j++) { scores[j] = Math.exp(scores[j]-maxS); sumE += scores[j]; }
+      var o = [0, 0];
+      for (var j = 0; j < N; j++) {
+        var aij = scores[j]/sumE;
+        o[0] += aij * neurons[j].v[0];
+        o[1] += aij * neurons[j].v[1];
+      }
+      neurons[i].attnOut = o;
+    }
+  }
+
+  // Holtmaat & Bhatt (2009): activity-dependent synapse formation and pruning
+  function checkStructuralPlasticity(neurons) {
+    var N = neurons.length;
+    var thresh = Math.max(W, H) * 0.35;
+    for (var i = 0; i < N; i++) {
+      var ni = neurons[i];
+      ni.axons = ni.axons.filter(function(ax) {
+        if (ax.weight < PRUNE_WEIGHT_THRESH) ax.quiescentFrames++;
+        else ax.quiescentFrames = 0;
+        return ax.quiescentFrames < PRUNE_QUIESCENT_THRESH;
+      });
+      for (var j = 0; j < N; j++) {
+        if (i === j) continue;
+        var already = false;
+        for (var k = 0; k < ni.axons.length; k++) {
+          if (ni.axons[k].targetIdx === j) { already = true; break; }
+        }
+        if (already) continue;
+        var ddx = ni.x - neurons[j].x, ddy = ni.y - neurons[j].y;
+        var d = Math.sqrt(ddx*ddx + ddy*ddy);
+        var P = K_FORM * ni.spikeTrace * neurons[j].spikeTrace / (1 + d/thresh);
+        if (Math.random() < P) {
+          var ax = buildAxon(ni, neurons[j], j);
+          ax.preIdx = i;
+          ni.axons.push(ax);
+        }
+      }
+    }
+  }
+
   // ── CONNECTOME NEURON NETWORK (full background) ──────────────────────────
   var NN = {
     neurons: [], particles: [],
+    frameCount: 0, activityAccum: 0, ripples: [],
+    W_Q: null, W_K: null, W_V: null,
 
     init: function () {
       this.neurons = []; this.particles = [];
@@ -612,7 +733,9 @@ document.getElementById('yr').textContent = new Date().getFullYear();
           m: 0.0529, h: 0.5961, n: 0.3177,
           I_syn: 0, I_ext: 0,
           spikeTimer: Math.floor(60 + i * 20 + Math.random() * 120),
-          extDur: 0, prevV: -65
+          extDur: 0, prevV: -65,
+          tSpike: -Infinity, spikeTrace: 0,
+          q: [0,0], k: [0,0], v: [0,0], attnOut: [0,0], age: 0
         });
       }
 
@@ -622,21 +745,22 @@ document.getElementById('yr').textContent = new Date().getFullYear();
           var dy = this.neurons[a].y - this.neurons[b].y;
           if (Math.sqrt(dx * dx + dy * dy) < thresh) {
             var na = this.neurons[a], nb = this.neurons[b];
-            var jx = (Math.random() - 0.5) * 40, jy = (Math.random() - 0.5) * 40;
-            var midX = (na.x + nb.x) / 2 + jx, midY = (na.y + nb.y) / 2 + jy;
-            na.axons.push({
-              sx: na.x, sy: na.y,
-              cp1x: na.x + (midX - na.x) * 0.5, cp1y: na.y + (midY - na.y) * 0.5,
-              cp2x: midX + (nb.x - midX) * 0.5,  cp2y: midY + (nb.y - midY) * 0.5,
-              ex: nb.x, ey: nb.y, targetIdx: b,
-              weight: 0.05 + Math.random() * 0.2
-            });
+            var ax = buildAxon(na, nb, b);
+            ax.preIdx = a;
+            na.axons.push(ax);
           }
         }
       }
+
+      if (!this.W_Q) { this.W_Q = randProj(); this.W_K = randProj(); this.W_V = randProj(); }
+      this.ripples = [];
+      this.activityAccum = 0;
     },
 
     update: function () {
+      this.frameCount++;
+      var doAttn    = (this.frameCount % 10 === 0);
+      var doStructP = (this.frameCount % 30 === 0);
       var self = this, dt = 0.05, Cm = 1;
       var gNa = 120, gK = 36, gL = 0.3, ENa = 50, EK = -77, EL = -54.387;
 
@@ -660,44 +784,86 @@ document.getElementById('yr').textContent = new Date().getFullYear();
         }
 
         if (nd.prevV < 10 && nd.V >= 10) {
+          nd.tSpike = self.frameCount;
+          nd.spikeTrace += 1;
+          self.activityAccum += 1;
           nd.axons.forEach(function (ax) {
-            // Fire probability scales with synaptic weight (pheromone model)
             if (Math.random() < 0.2 + ax.weight * 0.8) {
-              self.particles.push({ ax: ax, t: 0, spd: 0.006 + Math.random() * 0.004 });
+              if (self.particles.length < 300)
+                self.particles.push({ ax: ax, t: 0, spd: 0.006 + Math.random() * 0.004 });
             }
           });
         }
         nd.prevV = nd.V;
+        nd.spikeTrace *= (1 - SPIKE_TRACE_DECAY);
       });
 
-      // Synaptic decay — unused connections weaken (pheromone evaporation)
+      // Synaptic decay — unused connections weaken
       var mu_E = 0.002;
       this.neurons.forEach(function (nd) {
         nd.axons.forEach(function (ax) {
           ax.weight = Math.max(0.01, ax.weight * (1 - mu_E));
+          ax.age++;
         });
       });
 
       var alive = [];
       this.particles.forEach(function (p) {
         p.t += p.spd;
-        // LTP: synapse strengthens as spike travels (pheromone deposition)
-        p.ax.weight = Math.min(1, p.ax.weight + 0.001);
         if (p.t < 1) { alive.push(p); }
         else {
           var ti = p.ax.targetIdx;
           if (ti >= 0 && ti < self.neurons.length) {
             var target = self.neurons[ti];
-            // Synaptic current weighted by connection strength
             target.I_syn += 1.8 * (0.4 + p.ax.weight * 0.6);
-            // Hebbian bonus: extra potentiation when target is also active
+            // STDP — Bi & Poo (1998)
+            var pi = p.ax.preIdx;
+            if (pi >= 0 && pi < self.neurons.length) {
+              var dw = stdpDeltaW(self.neurons[pi].tSpike, target.tSpike);
+              p.ax.weight = Math.max(0.01, Math.min(1, p.ax.weight + dw));
+            }
+            // Hebbian bonus (reduced — heterosynaptic complement to STDP)
             if (target.V > -55) {
-              p.ax.weight = Math.min(1, p.ax.weight + 0.07);
+              p.ax.weight = Math.min(1, p.ax.weight + 0.02);
             }
           }
         }
       });
       this.particles = alive;
+
+      // Self-attention modulation — Vaswani et al. (2017)
+      if (doAttn) computeAttention(this.neurons);
+      this.neurons.forEach(function (nd) {
+        var normO = Math.sqrt(nd.attnOut[0]*nd.attnOut[0] + nd.attnOut[1]*nd.attnOut[1]);
+        nd.I_syn += ATTN_GAMMA * normO;
+      });
+
+      // Structural plasticity — Holtmaat & Bhatt (2009)
+      if (doStructP) checkStructuralPlasticity(this.neurons);
+
+      // Neurogenesis: spawn when global activity is high
+      this.activityAccum *= 0.99;
+      if (doStructP && this.activityAccum > NEUROGEN_THRESH && this.neurons.length < MAX_NEURONS) {
+        var docH2 = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, H);
+        var ncx = W*0.1 + Math.random()*W*0.8;
+        var ncy = docH2*0.05 + Math.random()*docH2*0.9;
+        this.neurons.push({
+          x: ncx, y: ncy, somaR: 5 + Math.random()*2,
+          segs: buildMorphology(ncx, ncy), axons: [],
+          V: -65, m: 0.0529, h: 0.5961, n: 0.3177,
+          I_syn: 0, I_ext: 0,
+          spikeTimer: Math.floor(80 + Math.random()*120), extDur: 0, prevV: -65,
+          tSpike: -Infinity, spikeTrace: 0,
+          q: [0,0], k: [0,0], v: [0,0], attnOut: [0,0], age: 0
+        });
+        this.activityAccum = 0;
+      }
+
+      // Ripple tick
+      this.ripples = this.ripples.filter(function(r) {
+        r.age++; r.r += (r.maxR - r.r) * 0.07; r.alpha *= 0.92;
+        return r.alpha > 0.01;
+      });
     },
 
     draw: function () {
@@ -716,13 +882,14 @@ document.getElementById('yr').textContent = new Date().getFullYear();
 
         nd.axons.forEach(function (ax) {
           var w = ax.weight;
-          ctx.strokeStyle = 'rgba(' + C + ',' + (0.08 + w * 0.55) + ')';
+          var ageFade = Math.min(1, (ax.age || 0) / 90);
+          ctx.strokeStyle = 'rgba(' + C + ',' + ((0.08 + w * 0.55) * ageFade) + ')';
           ctx.lineWidth = 0.3 + w * 2.8;
           ctx.beginPath();
           ctx.moveTo(ax.sx, ax.sy);
           ctx.bezierCurveTo(ax.cp1x, ax.cp1y, ax.cp2x, ax.cp2y, ax.ex, ax.ey);
           ctx.stroke();
-          ctx.fillStyle = 'rgba(' + C + ',' + (0.2 + w * 0.7) + ')';
+          ctx.fillStyle = 'rgba(' + C + ',' + ((0.2 + w * 0.7) * ageFade) + ')';
           ctx.beginPath(); ctx.arc(ax.ex, ax.ey, 1 + w * 3.5, 0, Math.PI * 2); ctx.fill();
         });
 
@@ -750,6 +917,14 @@ document.getElementById('yr').textContent = new Date().getFullYear();
         ctx.beginPath(); ctx.arc(px, py, 2 + ax.weight * 2.5, 0, Math.PI * 2); ctx.fill();
       });
 
+      // Click ripples
+      NN.ripples.forEach(function(r) {
+        ctx.globalAlpha = r.alpha * 0.8;
+        ctx.strokeStyle = 'rgba(80,180,160,' + r.alpha + ')';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(r.x, r.y, r.r, 0, Math.PI*2); ctx.stroke();
+      });
+
       ctx.restore();
     }
   };
@@ -767,6 +942,26 @@ document.getElementById('yr').textContent = new Date().getFullYear();
   }
 
   window.addEventListener('resize', resize);
+
+  window.addEventListener('click', function(e) {
+    var scrollY = window.scrollY || window.pageYOffset || 0;
+    var mx = e.clientX;
+    var my = e.clientY + scrollY;
+    var sigma = W * CLICK_SIGMA_FRAC;
+    var sigma2 = sigma * sigma;
+    NN.neurons.forEach(function(nd) {
+      var dx = nd.x - mx, dy = nd.y - my;
+      var attn = Math.exp(-(dx*dx + dy*dy) / (2*sigma2));
+      if (attn > 0.01) {
+        nd.I_ext  += CLICK_I * attn;
+        nd.extDur  = Math.max(nd.extDur, Math.floor(30 * attn));
+      }
+    });
+    if (NN.ripples.length < 10) {
+      NN.ripples.push({ x: mx, y: my, r: 5, maxR: W*0.25, alpha: 0.6, age: 0 });
+    }
+  });
+
   resize();
   raf = requestAnimationFrame(loop);
 })();

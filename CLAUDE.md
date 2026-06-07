@@ -121,3 +121,24 @@ Single-page portfolio. Sections: Research, Projects & Companies, Experience, Edu
 The Projects grid uses `<article class="project-card">` elements inside `.projects-grid`. The Gomoku card links to `./gomoku/gomoku-enhanced/`.
 
 Animated canvas backgrounds: neural network simulation (upper-left) and HPC cluster simulation (lower-right). Both pause when the tab is hidden.
+
+### Neural network backdrop (lines ~555–860 in `index.html`)
+
+The `NN` object runs a biophysically-grounded connectome simulation with four layers of theory:
+
+| Layer | Model | Reference |
+|---|---|---|
+| Neuron dynamics | Hodgkin-Huxley (m/h/n gating, INa/IK/IL currents) | Hodgkin & Huxley (1952) |
+| Synaptic plasticity | STDP: Δw = A± exp(−|Δt|/τ±) based on pre/post spike timing | Bi & Poo (1998) |
+| Structural plasticity | Synaptogenesis via spike-trace correlation; pruning when weight decays below threshold | Holtmaat & Bhatt (2009) |
+| Global modulation | Single-head self-attention: softmax(QKᵀ/√d) · V over neuron state vectors | Vaswani et al. (2017) |
+
+**Click interaction:** clicking anywhere on the page injects `I_ext` into nearby neurons via a Gaussian kernel (σ = 15% of viewport width), producing a ripple animation and local burst of firing.
+
+**Structural dynamics:**
+- New synapses form when two neurons' spike traces are both elevated (co-activity gate), up to `MAX_NEURONS = 20`
+- Weak synapses (`weight < 0.008`) that remain quiescent for 180 frames (~3 s) are pruned
+- New neurons spawn (up to cap) when global `activityAccum` exceeds threshold
+- New synapses fade in over 90 frames via `ageFade = min(1, age/90)`
+
+**Key constants:** `STDP_A_PLUS = 0.01`, `STDP_TAU_PLUS/MINUS = 20 frames`, `ATTN_GAMMA = 0.2`, `K_FORM = 0.15`, `CLICK_I = 15`.
