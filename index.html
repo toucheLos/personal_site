@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carlos Eckert</title>
+  <link rel="icon" type="image/png" href="images/Headshot.png">
   <style>
     *, *::before, *::after {
       box-sizing: border-box;
@@ -57,11 +58,27 @@
       margin-bottom: 36px;
     }
 
+    .header-top {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 5px;
+    }
+
+    .headshot {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid #e8e8e8;
+    }
+
     header h1 {
       font-size: 22px;
       font-weight: normal;
       letter-spacing: 0.01em;
-      margin-bottom: 5px;
+      margin-bottom: 0;
     }
 
     .tagline {
@@ -396,7 +413,10 @@
 
 <div id="content">
   <header>
-    <h1>Carlos Eckert</h1>
+    <div class="header-top">
+      <img src="images/Headshot.png" alt="Carlos Eckert" class="headshot">
+      <h1>Carlos Eckert</h1>
+    </div>
     <p class="tagline">I code and have dreams for the world. I'll write about it sometime.</p>
     <nav class="social-links">
       <a href="https://github.com/touchelos" target="_blank" rel="noopener noreferrer">GitHub</a>
