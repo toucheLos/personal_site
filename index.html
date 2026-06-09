@@ -727,12 +727,12 @@ document.getElementById('yr').textContent = new Date().getFullYear();
         var cx = W * 0.05 + Math.random() * W * 0.9;
         var cy = docH * 0.02 + Math.random() * docH * 0.96;
         this.neurons.push({
-          x: cx, y: cy, somaR: 6 + Math.random() * 3,
+          x: cx, y: cy, somaR: 9 + Math.random() * 5,
           segs: buildMorphology(cx, cy), axons: [],
           V: -65 + (Math.random() - 0.5) * 4,
           m: 0.0529, h: 0.5961, n: 0.3177,
           I_syn: 0, I_ext: 0,
-          spikeTimer: Math.floor(60 + i * 20 + Math.random() * 120),
+          spikeTimer: Math.floor(180 + i * 20 + Math.random() * 240),
           extDur: 0, prevV: -65,
           tSpike: -Infinity, spikeTrace: 0,
           q: [0,0], k: [0,0], v: [0,0], attnOut: [0,0], age: 0
@@ -764,10 +764,10 @@ document.getElementById('yr').textContent = new Date().getFullYear();
       var self = this, dt = 0.05, Cm = 1;
       var gNa = 120, gK = 36, gL = 0.3, ENa = 50, EK = -77, EL = -54.387;
 
-      this.neurons.forEach(function (nd) {
+      this.neurons.forEach(function (nd, idx) {
         if (--nd.spikeTimer <= 0) {
-          nd.spikeTimer = Math.floor(60 + Math.random() * 120);
-          nd.I_ext = 8; nd.extDur = 40;
+          nd.spikeTimer = Math.floor(180 + Math.random() * 240);
+          nd.I_ext = 6; nd.extDur = 25;
         }
         if (nd.extDur > 0) { nd.extDur--; } else { nd.I_ext = 0; }
 
@@ -790,7 +790,7 @@ document.getElementById('yr').textContent = new Date().getFullYear();
           nd.axons.forEach(function (ax) {
             if (Math.random() < 0.2 + ax.weight * 0.8) {
               if (self.particles.length < 300)
-                self.particles.push({ ax: ax, t: 0, spd: 0.006 + Math.random() * 0.004 });
+                self.particles.push({ ax: ax, t: 0, spd: 0.002 + Math.random() * 0.0015 });
             }
           });
         }
@@ -848,11 +848,11 @@ document.getElementById('yr').textContent = new Date().getFullYear();
         var ncx = W*0.1 + Math.random()*W*0.8;
         var ncy = docH2*0.05 + Math.random()*docH2*0.9;
         this.neurons.push({
-          x: ncx, y: ncy, somaR: 5 + Math.random()*2,
+          x: ncx, y: ncy, somaR: 9 + Math.random()*4,
           segs: buildMorphology(ncx, ncy), axons: [],
           V: -65, m: 0.0529, h: 0.5961, n: 0.3177,
           I_syn: 0, I_ext: 0,
-          spikeTimer: Math.floor(80 + Math.random()*120), extDur: 0, prevV: -65,
+          spikeTimer: Math.floor(180 + Math.random()*200), extDur: 0, prevV: -65,
           tSpike: -Infinity, spikeTrace: 0,
           q: [0,0], k: [0,0], v: [0,0], attnOut: [0,0], age: 0
         });
@@ -867,60 +867,71 @@ document.getElementById('yr').textContent = new Date().getFullYear();
     },
 
     draw: function () {
-      var C = '80,180,160';
       var scrollY = window.scrollY || window.pageYOffset || 0;
       ctx.save();
       ctx.translate(0, -scrollY);
       ctx.globalAlpha = 0.14;
 
       this.neurons.forEach(function (nd) {
-        ctx.strokeStyle = 'rgba(' + C + ',0.6)';
-        ctx.lineWidth = 1.5;
+        var norm = Math.max(0, Math.min(1, (nd.V + 65) / 80));
+        var hue  = 210 - norm * 160;   // blue (210) → gold (50)
+        var sat  = 70  + norm * 30;
+        var lit  = 45  + norm * 40;
+
+        // Dendrites — cool blue
+        ctx.strokeStyle = 'rgba(120,160,220,0.5)';
+        ctx.lineWidth = 1.2;
         nd.segs.forEach(function (seg) {
           ctx.beginPath(); ctx.moveTo(seg.x1, seg.y1); ctx.lineTo(seg.x2, seg.y2); ctx.stroke();
         });
 
+        // Synapses — width and opacity scale with weight
         nd.axons.forEach(function (ax) {
           var w = ax.weight;
           var ageFade = Math.min(1, (ax.age || 0) / 90);
-          ctx.strokeStyle = 'rgba(' + C + ',' + ((0.08 + w * 0.55) * ageFade) + ')';
-          ctx.lineWidth = 0.3 + w * 2.8;
+          ctx.strokeStyle = 'rgba(100,160,220,' + ((0.12 + w * 0.65) * ageFade) + ')';
+          ctx.lineWidth = 0.4 + w * 6;
           ctx.beginPath();
           ctx.moveTo(ax.sx, ax.sy);
           ctx.bezierCurveTo(ax.cp1x, ax.cp1y, ax.cp2x, ax.cp2y, ax.ex, ax.ey);
           ctx.stroke();
-          ctx.fillStyle = 'rgba(' + C + ',' + ((0.2 + w * 0.7) * ageFade) + ')';
-          ctx.beginPath(); ctx.arc(ax.ex, ax.ey, 1 + w * 3.5, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = 'rgba(100,160,220,' + ((0.25 + w * 0.65) * ageFade) + ')';
+          ctx.beginPath(); ctx.arc(ax.ex, ax.ey, 1.5 + w * 5, 0, Math.PI * 2); ctx.fill();
         });
 
+        // Firing glow — warm amber
         var firing = nd.V > 0;
         if (firing) {
-          ctx.globalAlpha = 0.55;
-          var g = ctx.createRadialGradient(nd.x, nd.y, 0, nd.x, nd.y, 16);
-          g.addColorStop(0, 'rgba(' + C + ',0.8)');
-          g.addColorStop(1, 'rgba(' + C + ',0)');
+          ctx.globalAlpha = 0.6;
+          var glowR = nd.somaR * 2.8;
+          var g = ctx.createRadialGradient(nd.x, nd.y, 0, nd.x, nd.y, glowR);
+          g.addColorStop(0, 'hsla(50,100%,75%,0.9)');
+          g.addColorStop(1, 'hsla(50,100%,75%,0)');
           ctx.fillStyle = g;
-          ctx.beginPath(); ctx.arc(nd.x, nd.y, 16, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(nd.x, nd.y, glowR, 0, Math.PI * 2); ctx.fill();
           ctx.globalAlpha = 0.14;
         }
-        var norm = Math.max(0, Math.min(1, (nd.V + 65) / 80));
-        ctx.fillStyle = 'rgba(' + C + ',' + (firing ? 0.95 : (0.25 + norm * 0.55)) + ')';
+
+        // Soma — voltage-encoded HSL color
+        var alpha = firing ? 0.98 : (0.45 + norm * 0.45);
+        ctx.fillStyle = 'hsla(' + hue + ',' + sat + '%,' + lit + '%,' + alpha + ')';
         ctx.beginPath(); ctx.arc(nd.x, nd.y, nd.somaR, 0, Math.PI * 2); ctx.fill();
       });
 
-      ctx.globalAlpha = 0.7;
+      // Action potential particles — amber
+      ctx.globalAlpha = 0.78;
       this.particles.forEach(function (p) {
         var ax = p.ax, t = p.t, mt = 1 - t;
         var px = mt*mt*mt*ax.sx + 3*mt*mt*t*ax.cp1x + 3*mt*t*t*ax.cp2x + t*t*t*ax.ex;
         var py = mt*mt*mt*ax.sy + 3*mt*mt*t*ax.cp1y + 3*mt*t*t*ax.cp2y + t*t*t*ax.ey;
-        ctx.fillStyle = 'rgba(' + C + ',0.9)';
-        ctx.beginPath(); ctx.arc(px, py, 2 + ax.weight * 2.5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = 'rgba(255,200,80,0.92)';
+        ctx.beginPath(); ctx.arc(px, py, 2.5 + ax.weight * 3, 0, Math.PI * 2); ctx.fill();
       });
 
-      // Click ripples
+      // Click ripples — blue-white
       NN.ripples.forEach(function(r) {
-        ctx.globalAlpha = r.alpha * 0.8;
-        ctx.strokeStyle = 'rgba(80,180,160,' + r.alpha + ')';
+        ctx.globalAlpha = r.alpha * 0.7;
+        ctx.strokeStyle = 'rgba(160,190,255,' + r.alpha + ')';
         ctx.lineWidth = 1.5;
         ctx.beginPath(); ctx.arc(r.x, r.y, r.r, 0, Math.PI*2); ctx.stroke();
       });
