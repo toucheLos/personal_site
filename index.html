@@ -72,6 +72,35 @@
       object-fit: cover;
       flex-shrink: 0;
       border: 1px solid #e8e8e8;
+      cursor: zoom-in;
+      transition: opacity 0.15s;
+    }
+
+    .headshot:hover {
+      opacity: 0.85;
+    }
+
+    #headshot-lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+    }
+
+    #headshot-lightbox.open {
+      display: flex;
+    }
+
+    #headshot-lightbox img {
+      max-width: min(480px, 90vw);
+      max-height: 90vh;
+      border-radius: 6px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      object-fit: contain;
     }
 
     header h1 {
@@ -414,7 +443,7 @@
 <div id="content">
   <header>
     <div class="header-top">
-      <img src="images/Headshot.png" alt="Carlos Eckert" class="headshot">
+      <img src="images/Headshot.png" alt="Carlos Eckert" class="headshot" id="headshot-thumb">
       <h1>Carlos Eckert</h1>
     </div>
     <p class="tagline">I code and have dreams for the world. I'll write about it sometime.</p>
@@ -1297,6 +1326,29 @@ document.getElementById('yr').textContent = new Date().getFullYear();
       label: TASK_LABELS[Math.floor(Math.random() * TASK_LABELS.length)],
       strength: 1.0
     });
+  });
+})();
+</script>
+
+<div id="headshot-lightbox" role="dialog" aria-label="Headshot enlarged">
+  <img src="images/Headshot.png" alt="Carlos Eckert">
+</div>
+
+<script>
+(function () {
+  const thumb = document.getElementById('headshot-thumb');
+  const lightbox = document.getElementById('headshot-lightbox');
+
+  thumb.addEventListener('click', function () {
+    lightbox.classList.add('open');
+  });
+
+  lightbox.addEventListener('click', function () {
+    lightbox.classList.remove('open');
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') lightbox.classList.remove('open');
   });
 })();
 </script>
