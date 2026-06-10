@@ -2,6 +2,6 @@
   "name": "personal-site",
   "private": true,
   "scripts": {
-    "build": "cd gomoku/gomoku-enhanced && npm install && npm run build && cd ../.. && mkdir -p public/gomoku && cp index.html public/ && cp -r gomoku/gomoku-enhanced/dist/. public/gomoku/ && if [ -d papers ]; then mkdir -p public/papers && cp -r papers/. public/papers/; fi"
+    "build": "cd gomoku/gomoku-enhanced && npm install && npm run build && cd ../.. && mkdir -p public/gomoku && cp index.html public/ && cp -r gomoku/gomoku-enhanced/dist/. public/gomoku/ && if [ -d papers ]; then mkdir -p public/papers && cp -r papers/. public/papers/; fi && if [ -d images ]; then mkdir -p public/images && cp -r images/. public/images/; fi"
   }
 }
