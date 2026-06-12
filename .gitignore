@@ -3,3 +3,4 @@ node_modules/
 gomoku/gomoku-enhanced/node_modules/
 gomoku/node_modules/
 gomoku/gomoku-enhanced/dist/
+.DS_Store

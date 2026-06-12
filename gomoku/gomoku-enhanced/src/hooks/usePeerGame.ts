@@ -24,14 +24,6 @@ interface UsePeerGameReturn {
   error: string | null;
 }
 
-const ICE_SERVERS: RTCIceServer[] = [
-  { urls: 'stun:stun.l.google.com:19302' },
-  { urls: 'stun:stun1.l.google.com:19302' },
-  { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' },
-  { urls: 'turn:openrelay.metered.ca:443', username: 'openrelayproject', credential: 'openrelayproject' },
-  { urls: 'turn:openrelay.metered.ca:443?transport=tcp', username: 'openrelayproject', credential: 'openrelayproject' },
-];
-
 export function usePeerGame(
   role: PeerRole | null,
   myName: string,
@@ -43,6 +35,7 @@ export function usePeerGame(
   const myNameRef = useRef(myName);
   const destroyedRef = useRef(false);
   const isConnectedRef = useRef(false);
+  const connectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => { myNameRef.current = myName; }, [myName]);
 
@@ -91,10 +84,25 @@ export function usePeerGame(
     }
   }, []);
 
+  const clearConnectTimeout = useCallback(() => {
+    if (connectTimeoutRef.current) {
+      clearTimeout(connectTimeoutRef.current);
+      connectTimeoutRef.current = null;
+    }
+  }, []);
+
   const wireConn = useCallback((conn: DataConnection) => {
     connRef.current = conn;
+
+    clearConnectTimeout();
+    connectTimeoutRef.current = setTimeout(() => {
+      if (destroyedRef.current || isConnectedRef.current) return;
+      setError('Connection timed out — the other player may be on a network that blocks peer-to-peer connections.');
+    }, 15000);
+
     conn.on('open', () => {
       if (destroyedRef.current) return;
+      clearConnectTimeout();
       setIsConnected(true);
       setError(null);
     });
@@ -103,9 +111,10 @@ export function usePeerGame(
       if (!destroyedRef.current) setIsConnected(false);
     });
     conn.on('error', (err) => {
+      clearConnectTimeout();
       if (!destroyedRef.current) setError(String(err));
     });
-  }, [handleData]);
+  }, [handleData, clearConnectTimeout]);
 
   useEffect(() => {
     if (!role || !roomCode) return;
@@ -113,7 +122,7 @@ export function usePeerGame(
 
     if (role === 'host') {
       setMyColor('black');
-      const peer = new Peer(roomCode, { config: { iceServers: ICE_SERVERS } });
+      const peer = new Peer(roomCode);
       peerRef.current = peer;
 
       peer.on('connection', (conn) => {
@@ -131,7 +140,7 @@ export function usePeerGame(
         if (!destroyedRef.current) setError(String(err));
       });
     } else {
-      const peer = new Peer({ config: { iceServers: ICE_SERVERS } });
+      const peer = new Peer();
       peerRef.current = peer;
 
       peer.on('open', () => {
@@ -150,6 +159,7 @@ export function usePeerGame(
 
     return () => {
       destroyedRef.current = true;
+      clearConnectTimeout();
       connRef.current = null;
       peerRef.current?.destroy();
       peerRef.current = null;
