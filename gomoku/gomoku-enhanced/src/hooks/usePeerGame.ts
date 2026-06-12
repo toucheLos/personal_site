@@ -24,6 +24,14 @@ interface UsePeerGameReturn {
   error: string | null;
 }
 
+const ICE_SERVERS: RTCIceServer[] = [
+  { urls: 'stun:stun.l.google.com:19302' },
+  { urls: 'stun:stun1.l.google.com:19302' },
+  { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' },
+  { urls: 'turn:openrelay.metered.ca:443', username: 'openrelayproject', credential: 'openrelayproject' },
+  { urls: 'turn:openrelay.metered.ca:443?transport=tcp', username: 'openrelayproject', credential: 'openrelayproject' },
+];
+
 export function usePeerGame(
   role: PeerRole | null,
   myName: string,
@@ -105,7 +113,7 @@ export function usePeerGame(
 
     if (role === 'host') {
       setMyColor('black');
-      const peer = new Peer(roomCode);
+      const peer = new Peer(roomCode, { config: { iceServers: ICE_SERVERS } });
       peerRef.current = peer;
 
       peer.on('connection', (conn) => {
@@ -123,7 +131,7 @@ export function usePeerGame(
         if (!destroyedRef.current) setError(String(err));
       });
     } else {
-      const peer = new Peer();
+      const peer = new Peer({ config: { iceServers: ICE_SERVERS } });
       peerRef.current = peer;
 
       peer.on('open', () => {
